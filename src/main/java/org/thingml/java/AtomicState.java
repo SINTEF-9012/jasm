@@ -1,12 +1,10 @@
 package org.thingml.java;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.thingml.java.ext.Event;
 import org.thingml.java.ext.IStateAction;
-import org.thingml.java.ext.NullHandlerAction;
 import org.thingml.java.ext.NullStateAction;
+
+import java.util.logging.Logger;
 
 public class AtomicState implements IState {
 
@@ -33,6 +31,11 @@ public class AtomicState implements IState {
     public void onExit() {
         log.finest(name + " on exit at " + System.currentTimeMillis());
         action.onExit();
+    }
+
+    public synchronized IState dispatch(final Event e, final HandlerHelper helper) {
+        final IHandler handler = helper.getActiveHandler(this, e);
+        return handler.execute(e);
     }
 
     public String getName() {

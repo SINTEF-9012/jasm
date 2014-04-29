@@ -1,11 +1,9 @@
 package org.thingml.java;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.stream.Stream;
-import org.thingml.java.ext.Event;
 import org.thingml.java.ext.IStateAction;
-import org.thingml.java.ext.NullEvent;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  *

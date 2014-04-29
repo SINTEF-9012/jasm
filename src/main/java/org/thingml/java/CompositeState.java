@@ -1,13 +1,13 @@
 package org.thingml.java;
 
+import org.thingml.java.ext.Event;
+import org.thingml.java.ext.IStateAction;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-import org.thingml.java.ext.Event;
-import org.thingml.java.ext.IStateAction;
 
 /**
  * Composite are containers for regions
@@ -32,13 +32,25 @@ public abstract class CompositeState extends AtomicState {
         this.regions = Collections.unmodifiableList(reg);
     }
 
-    public synchronized boolean dispacth(final Event e) {
+    public synchronized boolean dispatch(final Event e) {
         final DispatchStatus status = new DispatchStatus();
         getRegions().forEach(r -> {
-            log.finest(getName() + ".dispatch");
             status.update(r.handle(e));
         });
         return status.status;
+    }
+
+    public synchronized IState dispatch(final Event e, final HandlerHelper helper) {
+        final DispatchStatus status = new DispatchStatus();
+        getRegions().forEach(r -> {
+            status.update(r.handle(e));
+        });
+        if (!status.status) {//none of the region consumed the event, then this composite can try to consume it
+            final IHandler handler = helper.getActiveHandler(this, e);
+            return handler.execute(e);
+        } else {
+            return null;
+        }
     }
 
     public String toString() {

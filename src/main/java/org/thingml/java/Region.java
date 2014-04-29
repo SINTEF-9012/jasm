@@ -1,16 +1,16 @@
 package org.thingml.java;
 
+import org.thingml.java.ext.Event;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-import org.thingml.java.ext.Event;
-import org.thingml.java.ext.NullEvent;
 
 /**
  *
  * @author bmori
  */
-public final class Region implements IState {
+public final class Region /*implements IState*/ {
 
     protected final String name;
     protected final IState initial;
@@ -35,32 +35,12 @@ public final class Region implements IState {
     }
 
     public synchronized boolean handle(final Event e) {
-        log.finest(getName() + " handle " + e.getType().getName());
-        IState next = null;
-        if (current instanceof CompositeState) {
-            CompositeState composite = (CompositeState) current;
-            log.finest("          Composite: " + composite.toString());
-            if (!composite.dispacth(e)) {
-                final IHandler handler = helper.getActiveHandler(current, e);
-                log.finest("          Composite: " + current.toString());
-                next = handler.execute(e);
-                if (null != next) {
-                    log.finest("                        OK");
-                    current = next;
-                    return true;
-                }
-            }
-        } else {//current is an Atomic State
-            final IHandler handler = helper.getActiveHandler(current, e);
-            log.finest("          Atomic: " + current.toString());
-            next = handler.execute(e);
-            if (null != next) {
-                log.finest("                        OK");
-                current = next;
-                return true;
-            }
+        //log.finest(getName() + " handle " + e.getType().getName());
+        IState next = current.dispatch(e, helper);
+        if (null != next) {
+            current = next;
+            return true;
         }
-
         return false;
     }
 
@@ -68,7 +48,6 @@ public final class Region implements IState {
         return name;
     }
 
-    @Override
     public void onEntry() {
         if (!keepHistory) {
             current = initial;
@@ -76,7 +55,6 @@ public final class Region implements IState {
         current.onEntry();
     }
 
-    @Override
     public void onExit() {
         current.onExit();
     }

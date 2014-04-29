@@ -5,24 +5,16 @@
  */
 package org.thingml.java.sample;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import org.thingml.java.AtomicState;
-import org.thingml.java.CompositeState;
-import org.thingml.java.CompositeStateMT;
-import org.thingml.java.CompositeStateST;
-import org.thingml.java.Handler;
-import org.thingml.java.IState;
-import org.thingml.java.Region;
-import org.thingml.java.Transition;
-import org.thingml.java.ext.NullEvent;
+import org.thingml.java.*;
 import org.thingml.java.ext.NullEventType;
 import org.thingml.java.ext.NullHandlerAction;
 import org.thingml.java.ext.NullStateAction;
 
-import junit.framework.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import junit.framework.*;
 
 /**
  *
@@ -99,7 +91,7 @@ public class Sample1Test extends TestCase {
         root.onEntry();
         Assert.assertEquals(root.getRegions().findFirst().get().getCurrent(), s1_root);
         Assert.assertEquals(c.getRegions().findFirst().get().getCurrent(), s1);
-        root.dispacth(nullEventType.instantiate());//s1_root --> s2_root
+        root.dispatch(nullEventType.instantiate());//s1_root --> s2_root
         Assert.assertEquals(root.getRegions().findFirst().get().getCurrent(), s2_root);
         Assert.assertEquals(c.getRegions().findFirst().get().getCurrent(), s1);
     }

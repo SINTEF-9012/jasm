@@ -5,14 +5,10 @@
  */
 package org.thingml.java;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.logging.Logger;
 import org.thingml.java.ext.Event;
 import org.thingml.java.ext.EventType;
+
+import java.util.*;
 
 /**
  *

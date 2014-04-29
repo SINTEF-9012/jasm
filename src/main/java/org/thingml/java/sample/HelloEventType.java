@@ -23,8 +23,4 @@ public class HelloEventType extends EventType {
         return new HelloEvent(this, who);    
     }
 
-    public Event instantiate() {
-        throw new UnsupportedOperationException("Events of type " + getName() + " take parameter(s), please use the non-default \"instantiate\" method (or implement the default one by providing default values to parameters.)");
-    }
-    
 }

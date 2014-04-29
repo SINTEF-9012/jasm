@@ -7,9 +7,5 @@ public abstract class EventType {
     public String getName() {
         return name;
     }
-    
-    public Event instantiate() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
 }

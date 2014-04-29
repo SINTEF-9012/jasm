@@ -5,21 +5,12 @@
  */
 package org.thingml.java.sample;
 
+import org.thingml.java.*;
+import org.thingml.java.ext.NullStateAction;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.thingml.java.AtomicState;
-import org.thingml.java.CompositeState;
-import org.thingml.java.CompositeStateMT;
-import org.thingml.java.CompositeStateST;
-import org.thingml.java.Handler;
-import org.thingml.java.IState;
-import org.thingml.java.Region;
-import org.thingml.java.Transition;
-import org.thingml.java.ext.NullEvent;
-import org.thingml.java.ext.NullEventType;
-import org.thingml.java.ext.NullHandlerAction;
-import org.thingml.java.ext.NullStateAction;
 
 /**
  *
@@ -46,6 +37,6 @@ public class HelloWorld {
         CompositeState c = new CompositeStateST("c", states, s1, transitions, new NullStateAction(), Collections.EMPTY_LIST, false);
 
         c.onEntry();
-        c.dispacth(helloEventType.instantiate("world"));
+        c.dispatch(helloEventType.instantiate("world"));
     }
 }

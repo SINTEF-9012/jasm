@@ -5,19 +5,14 @@
  */
 package org.thingml.java.sample;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import org.thingml.java.AtomicState;
-import org.thingml.java.CompositeState;
-import org.thingml.java.CompositeStateMT;
-import org.thingml.java.Handler;
-import org.thingml.java.IState;
-import org.thingml.java.Transition;
+import org.thingml.java.*;
 import org.thingml.java.ext.DebugHandlerAction;
 import org.thingml.java.ext.NullEventType;
 import org.thingml.java.ext.NullStateAction;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import junit.framework.*;
 
@@ -69,13 +64,13 @@ public class Sample2Test extends TestCase {
         root.onEntry();//c.onEntry, s1.onEntry
         Assert.assertEquals(root.getRegions().findFirst().get().getCurrent(), c);
         Assert.assertEquals(c.getRegions().findFirst().get().getCurrent(), s1);
-        root.dispacth(helloEventType.instantiate("world"));//s1 --> s2 (not c-->s4)
+        root.dispatch(helloEventType.instantiate("world"));//s1 --> s2 (not c-->s4)
         Assert.assertEquals(root.getRegions().findFirst().get().getCurrent(), c);
         Assert.assertEquals(c.getRegions().findFirst().get().getCurrent(), s2);
-        root.dispacth(helloEventType.instantiate("world"));//s2 --> s3 (not c-->s4)
+        root.dispatch(helloEventType.instantiate("world"));//s2 --> s3 (not c-->s4)
         Assert.assertEquals(root.getRegions().findFirst().get().getCurrent(), c);
         Assert.assertEquals(c.getRegions().findFirst().get().getCurrent(), s3);
-        root.dispacth(helloEventType.instantiate("world"));//c --> s4
+        root.dispatch(helloEventType.instantiate("world"));//c --> s4
         Assert.assertEquals(root.getRegions().findFirst().get().getCurrent(), s4);
     }
 }
