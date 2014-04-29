@@ -6,8 +6,8 @@ import org.thingml.java.ext.IHandlerAction;
 
 public final class InternalTransition extends Handler {
 
-    public InternalTransition(final String name, final IHandlerAction action, final EventType event, final IState source) {
-        super(name, action, event, source);
+    public InternalTransition(final String name, final IHandlerAction action, final EventType event, final Port port, final IState source) {
+        super(name, action, event, port, source);
     }
     
     public IState execute(final Event e) {

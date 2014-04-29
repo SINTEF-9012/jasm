@@ -44,11 +44,11 @@ public class HandlerHelper {
         }
     }
 
-    public IHandler getActiveHandler(final IState current, final Event e) {
+    public IHandler getActiveHandler(final IState current, final Event e, final Port port) {
         List<IHandler> handlers = (map.get(current) != null) ? map.get(current).get(e.getType()) : null;
         IHandler result;
         if (handlers != null) {
-            Optional<IHandler> status = handlers.stream().filter(p -> p.check(e)).findFirst();
+            Optional<IHandler> status = handlers.stream().filter(p -> p.check(e, port)).findFirst();
             if (status.isPresent()) {
                 result = status.get();
             } else {

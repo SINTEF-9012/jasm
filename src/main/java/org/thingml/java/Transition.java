@@ -8,8 +8,8 @@ public final class Transition extends Handler {
 
     private final IState target;
     
-    public Transition(final String name, final IHandlerAction action, final EventType event, final IState source, final IState target) {
-        super(name, action, event, source);
+    public Transition(final String name, final IHandlerAction action, final EventType event, final Port port, final IState source, final IState target) {
+        super(name, action, event, port, source);
         this.target = target;
     }
 

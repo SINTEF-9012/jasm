@@ -9,17 +9,19 @@ public abstract class Handler implements IHandler {
     private final String name;
     private final IHandlerAction action;
     private final EventType event;
+    private final Port port;
     private final IState source;
 
-    public Handler(final String name, final IHandlerAction action, final EventType event, final IState source) {
+    public Handler(final String name, final IHandlerAction action, final EventType event, final Port port, final IState source) {
         this.name = name;
         this.action = action;
         this.event = event;
+        this.port = port;
         this.source = source;
     }
 
-    public boolean check(final Event e) {
-        return action.check(e, event);
+    public boolean check(final Event e, final Port p) {
+        return p == port && action.check(e, event);
     }
 
     public String getName() {

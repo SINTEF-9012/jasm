@@ -8,11 +8,11 @@ import org.thingml.java.ext.NullHandlerAction;
 final class NullHandler extends Handler {
 
     public NullHandler(final EventType event, final IState source) {
-        this("", new NullHandlerAction(), event, source);
+        this("", new NullHandlerAction(), event, null, source);
     }
     
-    private NullHandler(final String name, final IHandlerAction action, final EventType event, final IState source) {
-        super(name, action, event, source);
+    private NullHandler(final String name, final IHandlerAction action, final EventType event, final Port port, final IState source) {
+        super(name, action, event, port, source);
     }
 
     public IState execute(Event e) {

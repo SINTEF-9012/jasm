@@ -30,7 +30,7 @@ public class Sample1Test extends TestCase {
         //Default region of composite
         IState s1 = new AtomicState("s1");
         IState s2 = new AtomicState("s2");
-        Transition t1 = new Transition("t1", new NullHandlerAction(), nullEventType, s1, s2);
+        Transition t1 = new Transition("t1", new NullHandlerAction(), nullEventType, null, s1, s2);
 
         List<IState> states = new ArrayList<>();
         states.add(s1);
@@ -43,7 +43,7 @@ public class Sample1Test extends TestCase {
         //region 1
         IState s1_r = new AtomicState("s1_r");
         IState s2_r = new AtomicState("s2_r");
-        Transition t1_r = new Transition("t1_r", new NullHandlerAction(), nullEventType, s1_r, s2_r);
+        Transition t1_r = new Transition("t1_r", new NullHandlerAction(), nullEventType, null, s1_r, s2_r);
 
         List<IState> states_r = new ArrayList<>();
         states_r.add(s1_r);
@@ -72,8 +72,8 @@ public class Sample1Test extends TestCase {
         //Default region of root composite
         IState s1_root = new AtomicState("s1_root");
         IState s2_root = new AtomicState("s2_root");
-        Transition t1_root = new Transition("t1_root", new NullHandlerAction(), nullEventType, s1_root, s2_root);
-        Transition t2_root = new Transition("t2_root", new NullHandlerAction(), nullEventType, s2_root, c);
+        Transition t1_root = new Transition("t1_root", new NullHandlerAction(), nullEventType, null, s1_root, s2_root);
+        Transition t2_root = new Transition("t2_root", new NullHandlerAction(), nullEventType, null, s2_root, c);
 
         List<IState> states_root = new ArrayList<>();
         states_root.add(s1_root);
@@ -91,7 +91,7 @@ public class Sample1Test extends TestCase {
         root.onEntry();
         Assert.assertEquals(root.getRegions().findFirst().get().getCurrent(), s1_root);
         Assert.assertEquals(c.getRegions().findFirst().get().getCurrent(), s1);
-        root.dispatch(nullEventType.instantiate());//s1_root --> s2_root
+        root.dispatch(nullEventType.instantiate(), null);//s1_root --> s2_root
         Assert.assertEquals(root.getRegions().findFirst().get().getCurrent(), s2_root);
         Assert.assertEquals(c.getRegions().findFirst().get().getCurrent(), s1);
     }
