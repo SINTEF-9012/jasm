@@ -35,7 +35,6 @@ public final class Region /*implements IState*/ {
     }
 
     public synchronized boolean handle(final Event e, final Port port) {
-        //log.finest(getName() + " handle " + e.getType().getName());
         IState next = current.dispatch(e, port, helper);
         if (null != next) {
             current = next;

@@ -21,12 +21,14 @@ import java.util.logging.Logger;
 public class HelloWorld extends Component {
 
     //Event types
-    private final HelloEventType helloEventType = new HelloEventType();
+    private HelloEventType helloEventType;
 
     //Ports
     private Port p1;
 
     protected CompositeState buildBehavior() {
+        helloEventType = new HelloEventType();
+
         //Initialize ports
         List<EventType> in = new ArrayList<>();
         in.add(helloEventType);
