@@ -15,10 +15,12 @@ import org.thingml.java.ext.EventType;
  * @author bmori
  */
 public class HelloEvent extends Event {
+
+    public final String who;
     
     protected HelloEvent(EventType type, String who) {
         super(type);
-        params.put("who", who);
+        this.who = who;
     }
     
 }

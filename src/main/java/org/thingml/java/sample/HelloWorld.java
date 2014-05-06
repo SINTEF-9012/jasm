@@ -60,7 +60,8 @@ public class HelloWorld extends Component {
         public HelloHandlerAction() { }
 
         public void execute(final Event e) {
-            System.out.println("hello " + e.get("who") + "!");
+            HelloEvent ce = (HelloEvent) e;
+            System.out.println("hello " + ce.who + "!");
         }
 
     }

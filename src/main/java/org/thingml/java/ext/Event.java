@@ -5,8 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class Event {
 
-    protected Map<String, Object> params = new ConcurrentHashMap<>();
-
     private final EventType type;
 
     protected Event(final EventType type) {
@@ -15,10 +13,6 @@ public abstract class Event {
 
     public EventType getType() {
         return type;
-    }
-
-    public Object get(String param) {
-        return params.get(param);
     }
 
 }
