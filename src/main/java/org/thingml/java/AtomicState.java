@@ -34,8 +34,7 @@ public class AtomicState implements IState {
     }
 
     public synchronized IState dispatch(final Event e, Port port, final HandlerHelper helper) {
-        final IHandler handler = helper.getActiveHandler(this, e, port);
-        return handler.execute(e);
+        return helper.getActiveHandler(this, e, port).execute(e);
     }
 
     public String getName() {

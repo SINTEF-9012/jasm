@@ -22,4 +22,22 @@ public class Port {
         this.out = Collections.unmodifiableList(out);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Port) {
+            final Port p = (Port) o;
+            return p.name.equals(name) && p.type.equals(type) && p.in.equals(in) && p.out.equals(out);
+        }
+        return false;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + in.hashCode();
+        result = 31 * result + out.hashCode();
+        return result;
+    }
 }

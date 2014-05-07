@@ -31,7 +31,7 @@ public final class Region /*implements IState*/ {
         this.transitions = Collections.unmodifiableList(transitions);
 
         this.current = this.initial;
-        this.helper = new HandlerHelper(states, transitions);
+        this.helper = new HandlerHelper().init(states, transitions);
     }
 
     public synchronized boolean handle(final Event e, final Port port) {

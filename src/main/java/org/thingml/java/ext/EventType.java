@@ -8,4 +8,13 @@ public abstract class EventType {
         return name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return (o instanceof EventType) && ((EventType)o).getName().equals(name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }

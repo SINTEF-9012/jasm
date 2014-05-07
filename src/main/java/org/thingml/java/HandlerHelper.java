@@ -18,45 +18,30 @@ public class HandlerHelper {
 
     private final Map<IState, Map<EventType, List<IHandler>>> map;
 
-    public HandlerHelper(final List<IState> states, final List<Handler> transitions) {
-        map = new HashMap<>(states.size() * 4 / 3 + 1);//perfect size to avoid re-hashing during init
-        init(states, transitions);
+    public HandlerHelper() {
+        map = new HashMap<>();
     }
     
-    private void init(final List<IState> states, final List<Handler> transitions) {
+    public HandlerHelper init(final List<IState> states, final List<Handler> transitions) {
         for (IState s : states) {
             Map<EventType, List<IHandler>> tmap = new HashMap<>();
             map.put(s, tmap);
-            for (Handler t : transitions) {//TODO: maybe use some Java8 features here to make the code nicer?
-                if (t.getSource() == s) {
-                    List<IHandler> handlers = tmap.get(t.getEvent());
-                    if (handlers == null) {
-                        handlers = new ArrayList<>();
-                        tmap.put(t.getEvent(), handlers);
-                    }
-                    handlers.add(t);
-                }
-            }
+            transitions.stream().filter(h -> h.getSource().equals(s)).forEach(h -> {
+                List <IHandler> handlers = tmap.getOrDefault(h.getEvent(), new ArrayList<>());
+                handlers.add(h);
+                tmap.put(h.getEvent(), handlers);
+            });
             if (s instanceof CompositeState) {
                 CompositeState c = (CompositeState) s;
-                c.getRegions().forEach(r -> init(r.states, r.transitions));
+                c.regions.forEach(r -> init(r.states, r.transitions));
             }
         }
+        return this;
     }
 
     public IHandler getActiveHandler(final IState current, final Event e, final Port port) {
-        List<IHandler> handlers = (map.get(current) != null) ? map.get(current).get(e.getType()) : null;
-        IHandler result;
-        if (handlers != null) {
-            Optional<IHandler> status = handlers.stream().filter(p -> p.check(e, port)).findFirst();
-            if (status.isPresent()) {
-                result = status.get();
-            } else {
-                result = new NullHandler(e.getType(), current);
-            }
-        } else {
-            result = new NullHandler(e.getType(), current);
-        }
-        return result;
+        return map.getOrDefault(current, Collections.emptyMap()).getOrDefault(e.getType(), Collections.emptyList()).stream()//get the list (potentially empty but not null) of potential handlers
+                .filter(p -> p.check(e, port)).findFirst()//find the handler that actually could be triggered
+                .orElse(new NullHandler(e.getType(), current));//or return a NullHandler if none can be triggered
     }
 }

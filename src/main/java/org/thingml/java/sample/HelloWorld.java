@@ -26,7 +26,11 @@ public class HelloWorld extends Component {
     //Ports
     private Port p1;
 
-    protected CompositeState buildBehavior() {
+    public HelloWorld(String name) {
+        super(name);
+    }
+
+    protected Component buildBehavior() {
         helloEventType = new HelloEventType();
 
         //Initialize ports
@@ -37,7 +41,8 @@ public class HelloWorld extends Component {
         //Default region of composite
         IState s1 = new AtomicState("start");
         IState s2 = new AtomicState("hello");
-        Transition t1 = new Transition("sayHello", new HelloHandlerAction(), helloEventType, p1, s1, s2);
+        Handler t1 = new InternalTransition("sayHello", new HelloHandlerAction(), helloEventType, p1, s1);
+        //Transition t1 = new Transition("sayHello", new HelloHandlerAction(), helloEventType, p1, s1, s2);
 
         List<IState> states = new ArrayList<>();
         states.add(s1);
@@ -46,11 +51,12 @@ public class HelloWorld extends Component {
         List<Handler> transitions = new ArrayList<>();
         transitions.add(t1);
 
-        return new CompositeStateST("root", states, s1, transitions, new NullStateAction(), Collections.EMPTY_LIST, false);
+        behavior = new CompositeStateST("root", states, s1, transitions, new NullStateAction(), Collections.EMPTY_LIST, false);
+        return this;
     }
 
     public static void main(String args[]) {
-         HelloWorld hw = new HelloWorld();
+         HelloWorld hw = (HelloWorld) new HelloWorld("HelloWorld").buildBehavior();
          hw.start();
          hw.receive(hw.helloEventType.instantiate("world"), hw.p1);
     }

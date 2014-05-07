@@ -41,11 +41,7 @@ public abstract class CompositeState extends AtomicState {
     }
 
     public synchronized IState dispatch(final Event e, Port port, final HandlerHelper helper) {
-        final DispatchStatus status = new DispatchStatus();
-        getRegions().forEach(r -> {
-            status.update(r.handle(e, port));
-        });
-        if (!status.status) {//none of the region consumed the event, then this composite can try to consume it
+        if (!dispatch(e, port)) {//none of the region consumed the event, then this composite can try to consume it
             final IHandler handler = helper.getActiveHandler(this, e, port);
             return handler.execute(e);
         } else {
@@ -59,5 +55,17 @@ public abstract class CompositeState extends AtomicState {
 
     //return a parallel or sequential stream, depending on sub-class (MT or ST).
     public abstract Stream<Region> getRegions();
+
+    public void onEntry() {
+        log.finest(name + " on entry at " + System.currentTimeMillis());
+        super.onEntry();
+        getRegions().forEach(r -> r.onEntry());
+    }
+
+    public void onExit() {
+        log.finest(name + " on exit at " + System.currentTimeMillis());
+        getRegions().forEach(r -> r.onExit());
+        super.onExit();
+    }
 
 }

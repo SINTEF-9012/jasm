@@ -10,15 +10,17 @@ import java.util.Map;
  */
 public abstract class Component {
 
-    private final CompositeState behavior;
+    protected CompositeState behavior;
     private final Map<Port, Connector> bindings;
+    private final static NullConnector nullConnector = new NullConnector(null, null, null, null);
+    public final String name;
 
-    public Component() {
-       behavior = buildBehavior();
+    public Component(String name) {
+       this.name = name;
        bindings = new HashMap<>();
     }
 
-    abstract protected CompositeState buildBehavior();
+    abstract protected Component buildBehavior();
 
     boolean canSend(Event event, Port port) {return port.out.contains(event.getType());}
 
@@ -27,10 +29,10 @@ public abstract class Component {
     public void send(Event event, Port port) {
         switch (port.type) {
              case PROVIDED:
-                 bindings.get(port).onProvided(event);
+                 bindings.getOrDefault(port, nullConnector).onProvided(event);
                  break;
              case REQUIRED:
-                 bindings.get(port).onRequired(event);
+                 bindings.getOrDefault(port, nullConnector).onRequired(event);
                  break;
         }
     }
@@ -41,6 +43,10 @@ public abstract class Component {
 
     public void start() {
         behavior.onEntry();
+    }
+
+    public void connect(Port p, Connector c) {
+         bindings.put(p, c);
     }
 
 }

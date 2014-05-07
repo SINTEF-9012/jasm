@@ -19,18 +19,6 @@ public final class CompositeStateMT extends CompositeState {
     }
 
     @Override
-    public void onEntry() {
-        super.onEntry();
-        regions.parallelStream().forEach(r -> r.onEntry());
-    }
-
-    @Override
-    public void onExit() {
-        regions.parallelStream().forEach(r -> r.onExit());
-        super.onExit();
-    }
-    
-    @Override
     public Stream<Region> getRegions() {
         return regions.parallelStream();
     }

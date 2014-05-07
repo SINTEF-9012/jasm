@@ -7,8 +7,8 @@ import org.thingml.java.ext.Event;
  */
 public class Connector {
 
-    private final Port required, provided;
-    private final Component client, server;
+    protected final Port required, provided;
+    protected final Component client, server;
 
     public Connector(Port required, Port provided, Component client, Component server) {
         assert required.type == PortType.REQUIRED && provided.type == PortType.PROVIDED;
@@ -16,6 +16,13 @@ public class Connector {
         this.provided = provided;
         this.client = client;
         this.server = server;
+        connect();
+    }
+
+    protected void connect() {
+        client.connect(required, this);
+        server.connect(provided, this);
+
     }
 
     public void onProvided(Event e) {
@@ -26,10 +33,10 @@ public class Connector {
         forward(e, provided, server);
     }
 
-    private synchronized void forward(Event e, Port p, Component c) {
-        if (c.canReceive(e, p)) {
+    public synchronized void forward(Event e, Port p, Component c) {
+        //if (c.canReceive(e, p)) {
             c.receive(e, p);
-        }
+        //}
     }
 
 }
