@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.thingml.java.sample;
+package org.thingml.java;
 
 import org.thingml.java.*;
 import org.thingml.java.ext.DebugHandlerAction;
@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import junit.framework.*;
+import org.thingml.java.sample.HelloEventType;
 
 /**
  *
@@ -35,42 +36,42 @@ public class Sample2Test extends TestCase {
         Transition t2 = new Transition("t2", new DebugHandlerAction(), helloEventType, null, s2, s3);
         
 
-        List<IState> states = new ArrayList<>();
+        List<IState> states = new ArrayList<IState>();
         states.add(s1);
         states.add(s2);
         states.add(s3);
 
-        List<Handler> transitions = new ArrayList<>();
+        List<Handler> transitions = new ArrayList<Handler>();
         transitions.add(t1);    
         transitions.add(t2);
 
         //Composite
-        CompositeState c = new CompositeStateMT("c", states, s1, transitions, new NullStateAction(), Collections.EMPTY_LIST, false);
+        CompositeState c = new CompositeState("c", states, s1, transitions, new NullStateAction(), Collections.EMPTY_LIST, false);
         
         //Root composite
         //Default region of root composite
         IState s4 = new AtomicState("s4");
         Transition t1_root = new Transition("t1_root", new DebugHandlerAction(), helloEventType, null, c, s4);
 
-        List<IState> states_root = new ArrayList<>();
+        List<IState> states_root = new ArrayList<IState>();
         states_root.add(c);
         states_root.add(s4);
 
-        List<Handler> transitions_root = new ArrayList<>();
+        List<Handler> transitions_root = new ArrayList<Handler>();
         transitions_root.add(t1_root);
         
-        CompositeState root = new CompositeStateMT("root", states_root, c, transitions_root, new NullStateAction(), Collections.EMPTY_LIST, false);
+        CompositeState root = new CompositeState("root", states_root, c, transitions_root, new NullStateAction(), Collections.EMPTY_LIST, false);
         
         root.onEntry();//c.onEntry, s1.onEntry
-        Assert.assertEquals(root.getRegions().findFirst().get().getCurrent(), c);
-        Assert.assertEquals(c.getRegions().findFirst().get().getCurrent(), s1);
+        Assert.assertEquals(root.getRegions().get(0).getCurrent(), c);
+        Assert.assertEquals(c.getRegions().get(0).getCurrent(), s1);
         root.dispatch(helloEventType.instantiate("world"), null);//s1 --> s2 (not c-->s4)
-        Assert.assertEquals(root.getRegions().findFirst().get().getCurrent(), c);
-        Assert.assertEquals(c.getRegions().findFirst().get().getCurrent(), s2);
+        Assert.assertEquals(root.getRegions().get(0).getCurrent(), c);
+        Assert.assertEquals(c.getRegions().get(0).getCurrent(), s2);
         root.dispatch(helloEventType.instantiate("world"), null);//s2 --> s3 (not c-->s4)
-        Assert.assertEquals(root.getRegions().findFirst().get().getCurrent(), c);
-        Assert.assertEquals(c.getRegions().findFirst().get().getCurrent(), s3);
+        Assert.assertEquals(root.getRegions().get(0).getCurrent(), c);
+        Assert.assertEquals(c.getRegions().get(0).getCurrent(), s3);
         root.dispatch(helloEventType.instantiate("world"), null);//c --> s4
-        Assert.assertEquals(root.getRegions().findFirst().get().getCurrent(), s4);
+        Assert.assertEquals(root.getRegions().get(0).getCurrent(), s4);
     }
 }

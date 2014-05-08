@@ -9,6 +9,10 @@ public final class DebugHandlerAction implements IHandlerAction {
     public DebugHandlerAction() {
     }
 
+    public boolean check(final Event e, final EventType t) {
+        return true;
+    }
+
     public void execute(final Event e) {
         log.info("on " + e.getType().getName() + "(" + e.getType().getClass().getName() + ")");
     }

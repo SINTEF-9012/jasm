@@ -17,7 +17,7 @@ public abstract class Component {
 
     public Component(String name) {
        this.name = name;
-       bindings = new HashMap<>();
+       bindings = new HashMap<Port, Connector>();
     }
 
     abstract protected Component buildBehavior();

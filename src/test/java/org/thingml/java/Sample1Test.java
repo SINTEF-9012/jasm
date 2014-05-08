@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.thingml.java.sample;
+package org.thingml.java;
 
 import org.thingml.java.*;
 import org.thingml.java.ext.NullEventType;
@@ -32,11 +32,11 @@ public class Sample1Test extends TestCase {
         IState s2 = new AtomicState("s2");
         Transition t1 = new Transition("t1", new NullHandlerAction(), nullEventType, null, s1, s2);
 
-        List<IState> states = new ArrayList<>();
+        List<IState> states = new ArrayList<IState>();
         states.add(s1);
         states.add(s2);
 
-        List<Handler> transitions = new ArrayList<>();
+        List<Handler> transitions = new ArrayList<Handler>();
         transitions.add(t1);
 
         
@@ -45,27 +45,27 @@ public class Sample1Test extends TestCase {
         IState s2_r = new AtomicState("s2_r");
         Transition t1_r = new Transition("t1_r", new NullHandlerAction(), nullEventType, null, s1_r, s2_r);
 
-        List<IState> states_r = new ArrayList<>();
+        List<IState> states_r = new ArrayList<IState>();
         states_r.add(s1_r);
         states_r.add(s2_r);
 
-        List<Handler> transitions_r = new ArrayList<>();
+        List<Handler> transitions_r = new ArrayList<Handler>();
         transitions_r.add(t1_r);
         Region r = new Region("r", states_r, s1_r, transitions_r, false);
         
         //region 2
         IState s1_r2 = new AtomicState("s1_r2");
-        List<IState> states_r2 = new ArrayList<>();
+        List<IState> states_r2 = new ArrayList<IState>();
         states_r2.add(s1_r2);
         Region r2 = new Region("r2", states_r2, s1_r2, Collections.EMPTY_LIST, false);
         
 
         //Composite
-        List<Region> regions = new ArrayList<>();
+        List<Region> regions = new ArrayList<Region>();
         regions.add(r);
         regions.add(r2);
         
-        CompositeState c = new CompositeStateMT("c", states, s1, transitions, new NullStateAction(), regions, false);
+        CompositeState c = new CompositeState("c", states, s1, transitions, new NullStateAction(), regions, false);
         
         
         //Root composite
@@ -75,24 +75,24 @@ public class Sample1Test extends TestCase {
         Transition t1_root = new Transition("t1_root", new NullHandlerAction(), nullEventType, null, s1_root, s2_root);
         Transition t2_root = new Transition("t2_root", new NullHandlerAction(), nullEventType, null, s2_root, c);
 
-        List<IState> states_root = new ArrayList<>();
+        List<IState> states_root = new ArrayList<IState>();
         states_root.add(s1_root);
         states_root.add(s2_root);
         states_root.add(c);
 
-        List<Handler> transitions_root = new ArrayList<>();
+        List<Handler> transitions_root = new ArrayList<Handler>();
         transitions_root.add(t1_root);
         transitions_root.add(t2_root);
         
-        CompositeState root = new CompositeStateMT("root", states_root, s1_root, transitions_root, new NullStateAction(), Collections.EMPTY_LIST, false);
+        CompositeState root = new CompositeState("root", states_root, s1_root, transitions_root, new NullStateAction(), Collections.EMPTY_LIST, false);
         
         
         
         root.onEntry();
-        Assert.assertEquals(root.getRegions().findFirst().get().getCurrent(), s1_root);
-        Assert.assertEquals(c.getRegions().findFirst().get().getCurrent(), s1);
+        Assert.assertEquals(root.getRegions().get(0).getCurrent(), s1_root);
+        Assert.assertEquals(c.getRegions().get(0).getCurrent(), s1);
         root.dispatch(nullEventType.instantiate(), null);//s1_root --> s2_root
-        Assert.assertEquals(root.getRegions().findFirst().get().getCurrent(), s2_root);
-        Assert.assertEquals(c.getRegions().findFirst().get().getCurrent(), s1);
+        Assert.assertEquals(root.getRegions().get(0).getCurrent(), s2_root);
+        Assert.assertEquals(c.getRegions().get(0).getCurrent(), s1);
     }
 }

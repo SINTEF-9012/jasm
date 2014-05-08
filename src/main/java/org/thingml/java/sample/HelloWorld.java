@@ -34,7 +34,7 @@ public class HelloWorld extends Component {
         helloEventType = new HelloEventType();
 
         //Initialize ports
-        List<EventType> in = new ArrayList<>();
+        List<EventType> in = new ArrayList<EventType>();
         in.add(helloEventType);
         p1 = new Port(PortType.PROVIDED, "hello", in, Collections.EMPTY_LIST);
 
@@ -44,14 +44,14 @@ public class HelloWorld extends Component {
         Handler t1 = new InternalTransition("sayHello", new HelloHandlerAction(), helloEventType, p1, s1);
         //Transition t1 = new Transition("sayHello", new HelloHandlerAction(), helloEventType, p1, s1, s2);
 
-        List<IState> states = new ArrayList<>();
+        List<IState> states = new ArrayList<IState>();
         states.add(s1);
         states.add(s2);
 
-        List<Handler> transitions = new ArrayList<>();
+        List<Handler> transitions = new ArrayList<Handler>();
         transitions.add(t1);
 
-        behavior = new CompositeStateST("root", states, s1, transitions, new NullStateAction(), Collections.EMPTY_LIST, false);
+        behavior = new CompositeState("root", states, s1, transitions, new NullStateAction(), Collections.EMPTY_LIST, false);
         return this;
     }
 
@@ -64,6 +64,10 @@ public class HelloWorld extends Component {
     private final class HelloHandlerAction implements IHandlerAction {
 
         public HelloHandlerAction() { }
+
+        public boolean check(final Event e, final EventType t) {
+            return true;
+        }
 
         public void execute(final Event e) {
             HelloEvent ce = (HelloEvent) e;

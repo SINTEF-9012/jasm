@@ -4,9 +4,7 @@ import org.thingml.java.ext.Event;
 
 interface IHandler {
 
-    default boolean check(final Event e, final Port p) {
-        return true;
-    }
+    boolean check(final Event e, final Port p);
 
     IState execute(final Event e);
 

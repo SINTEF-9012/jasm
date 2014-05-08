@@ -7,14 +7,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 /**
  * Composite are containers for regions
  *
  * @author bmori
  */
-public abstract class CompositeState extends AtomicState {
+public class CompositeState extends AtomicState {
 
     protected final List<Region> regions;
 
@@ -27,17 +26,17 @@ public abstract class CompositeState extends AtomicState {
     public CompositeState(final String name, final List<IState> states, final IState initial, final List<Handler> transitions, final IStateAction action, final List<Region> regions, final boolean keepHistory) {
         super(name);
         Region r = new Region("default", states, initial, transitions, keepHistory);
-        List<Region> reg = new ArrayList<>(regions);
+        List<Region> reg = new ArrayList<Region>(regions);
         reg.add(0, r);//we add the default region first
         this.regions = Collections.unmodifiableList(reg);
     }
 
     public synchronized boolean dispatch(final Event e, final Port port) {
-        final DispatchStatus status = new DispatchStatus();
-        getRegions().forEach(r -> {
-            status.update(r.handle(e, port));
-        });
-        return status.status;
+        boolean status = false;
+        for(Region r : regions) {
+            status = status || r.handle(e, port);
+        }
+        return status;
     }
 
     public synchronized IState dispatch(final Event e, Port port, final HandlerHelper helper) {
@@ -53,19 +52,23 @@ public abstract class CompositeState extends AtomicState {
         return "Composite state " + name;
     }
 
-    //return a parallel or sequential stream, depending on sub-class (MT or ST).
-    public abstract Stream<Region> getRegions();
-
     public void onEntry() {
         log.finest(name + " on entry at " + System.currentTimeMillis());
         super.onEntry();
-        getRegions().forEach(r -> r.onEntry());
+        for(Region r : regions) {
+            r.onEntry();
+        }
     }
 
     public void onExit() {
         log.finest(name + " on exit at " + System.currentTimeMillis());
-        getRegions().forEach(r -> r.onExit());
+        for(Region r : regions) {
+            r.onExit();
+        }
         super.onExit();
     }
 
+    public List<Region> getRegions() {
+        return regions;
+    }
 }
