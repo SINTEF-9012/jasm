@@ -27,13 +27,16 @@ public abstract class Component {
     boolean canReceive(Event event, Port port) {return port.in.contains(event.getType());}
 
     public void send(Event event, Port port) {
+        Connector c = bindings.get(port);
+        if (c == null) c = nullConnector;
         switch (port.type) {
              case PROVIDED:
-                 bindings.getOrDefault(port, nullConnector).onProvided(event);
+                 c.onProvided(event);
                  break;
              case REQUIRED:
-                 bindings.getOrDefault(port, nullConnector).onRequired(event);
+                 c.onRequired(event);
                  break;
+
         }
     }
 
