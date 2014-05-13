@@ -24,7 +24,7 @@ public class CompositeState extends AtomicState {
     }
 
     public CompositeState(final String name, final List<IState> states, final IState initial, final List<Handler> transitions, final IStateAction action, final List<Region> regions, final boolean keepHistory) {
-        super(name);
+        super(name, action);
         Region r = new Region("default", states, initial, transitions, keepHistory);
         List<Region> reg = new ArrayList<Region>(regions);
         reg.add(0, r);//we add the default region first
@@ -53,7 +53,7 @@ public class CompositeState extends AtomicState {
     }
 
     public void onEntry() {
-        log.finest(name + " on entry at " + System.currentTimeMillis());
+        log.finest(this + " on entry at " + System.currentTimeMillis());
         super.onEntry();
         for(Region r : regions) {
             r.onEntry();
@@ -61,7 +61,7 @@ public class CompositeState extends AtomicState {
     }
 
     public void onExit() {
-        log.finest(name + " on exit at " + System.currentTimeMillis());
+        log.finest(this + " on exit at " + System.currentTimeMillis());
         for(Region r : regions) {
             r.onExit();
         }

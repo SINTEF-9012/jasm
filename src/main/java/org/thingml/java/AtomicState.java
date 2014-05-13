@@ -24,12 +24,12 @@ public class AtomicState implements IState {
     }
 
     public void onEntry() {
-        log.finest(name + " on entry at " + System.currentTimeMillis());
+        log.info(this + " on entry at " + System.currentTimeMillis());
         action.onEntry();
     }
 
     public void onExit() {
-        log.finest(name + " on exit at " + System.currentTimeMillis());
+        log.info(this + " on exit at " + System.currentTimeMillis());
         action.onExit();
     }
 
