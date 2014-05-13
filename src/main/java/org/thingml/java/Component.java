@@ -1,6 +1,7 @@
 package org.thingml.java;
 
 import org.thingml.java.ext.Event;
+import org.thingml.java.ext.NullEventType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +18,9 @@ public abstract class Component {
     private final static NullConnector nullConnector = new NullConnector(null, null, null, null);
     public final String name;
     private boolean started = false;
+    private final NullEventType net = new NullEventType();
 
-    private Queue<SignedEvent> queue = new ConcurrentLinkedQueue<SignedEvent>();
+    private final Queue<SignedEvent> queue = new ConcurrentLinkedQueue<SignedEvent>();
 
     public Component(String name) {
        this.name = name;
@@ -49,6 +51,7 @@ public abstract class Component {
         if (!started) {
             System.out.println("Queuing event " + event.getType().getName());
             queue.offer(new SignedEvent(event, port));
+            queue.offer(new SignedEvent(net.instantiate(), null));
         } else {
             System.out.println("Dispatching event " + event.getType().getName());
             behavior.dispatch(event, port);
@@ -64,6 +67,7 @@ public abstract class Component {
             behavior.dispatch(se.event, se.port);
             se = queue.poll();
         }
+        receive(net.instantiate(), null);
     }
 
     public void connect(Port p, Connector c) {

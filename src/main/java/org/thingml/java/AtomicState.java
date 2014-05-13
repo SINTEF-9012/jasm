@@ -33,10 +33,6 @@ public class AtomicState implements IState {
         action.onExit();
     }
 
-    public synchronized IState dispatch(final Event e, Port port, final HandlerHelper helper) {
-        return helper.getActiveHandler(this, e, port).execute(e);
-    }
-
     public String getName() {
         return name;
     }

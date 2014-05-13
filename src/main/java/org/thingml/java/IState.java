@@ -8,6 +8,4 @@ public interface IState {
 
     void onExit();
 
-    IState dispatch(final Event e, final Port port, final HandlerHelper helper);
-
 }

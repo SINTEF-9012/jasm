@@ -63,15 +63,15 @@ public class Sample2Test extends TestCase {
         CompositeState root = new CompositeState("root", states_root, c, transitions_root, new NullStateAction(), Collections.EMPTY_LIST, false);
         
         root.onEntry();//c.onEntry, s1.onEntry
-        Assert.assertEquals(root.getRegions().get(0).getCurrent(), c);
-        Assert.assertEquals(c.getRegions().get(0).getCurrent(), s1);
+        assertEquals(c, root.getRegions().get(0).getCurrent());
+        assertEquals(s1, c.getRegions().get(0).getCurrent());
         root.dispatch(helloEventType.instantiate("world"), null);//s1 --> s2 (not c-->s4)
-        Assert.assertEquals(root.getRegions().get(0).getCurrent(), c);
-        Assert.assertEquals(c.getRegions().get(0).getCurrent(), s2);
+        assertEquals(c, root.getRegions().get(0).getCurrent());
+        assertEquals(s2, c.getRegions().get(0).getCurrent());
         root.dispatch(helloEventType.instantiate("world"), null);//s2 --> s3 (not c-->s4)
-        Assert.assertEquals(root.getRegions().get(0).getCurrent(), c);
-        Assert.assertEquals(c.getRegions().get(0).getCurrent(), s3);
+        assertEquals(c, root.getRegions().get(0).getCurrent());
+        assertEquals(s3, c.getRegions().get(0).getCurrent());
         root.dispatch(helloEventType.instantiate("world"), null);//c --> s4
-        Assert.assertEquals(root.getRegions().get(0).getCurrent(), s4);
+        assertEquals(s4, root.getRegions().get(0).getCurrent());
     }
 }

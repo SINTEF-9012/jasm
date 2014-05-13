@@ -31,20 +31,9 @@ public class CompositeState extends AtomicState {
         this.regions = Collections.unmodifiableList(reg);
     }
 
-    public synchronized boolean dispatch(final Event e, final Port port) {
-        boolean status = false;
+    public synchronized void dispatch(final Event e, final Port port) {
         for(Region r : regions) {
-            status = status || r.handle(e, port);
-        }
-        return status;
-    }
-
-    public synchronized IState dispatch(final Event e, Port port, final HandlerHelper helper) {
-        if (!dispatch(e, port)) {//none of the region consumed the event, then this composite can try to consume it
-            final IHandler handler = helper.getActiveHandler(this, e, port);
-            return handler.execute(e);
-        } else {
-            return null;
+            r.handle(e, port);
         }
     }
 

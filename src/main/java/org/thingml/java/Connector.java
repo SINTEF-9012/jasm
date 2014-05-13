@@ -11,7 +11,7 @@ public class Connector {
     protected final Component client, server;
 
     public Connector(Port required, Port provided, Component client, Component server) {
-        assert required.type == PortType.REQUIRED && provided.type == PortType.PROVIDED;
+        //assert required.type == PortType.REQUIRED && provided.type == PortType.PROVIDED;
         this.required = required;
         this.provided = provided;
         this.client = client;
