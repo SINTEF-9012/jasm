@@ -40,4 +40,8 @@ public class Port {
         result = 31 * result + out.hashCode();
         return result;
     }
+
+    public String getName() {
+        return name;
+    }
 }
