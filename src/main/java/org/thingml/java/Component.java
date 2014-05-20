@@ -49,11 +49,11 @@ public abstract class Component {
 
     public void receive(Event event, Port port) {
         if (!started) {
-            System.out.println("Queuing event " + event.getType().getName());
+            //System.out.println("Queuing event " + event.getType().getName());
             queue.offer(new SignedEvent(event, port));
             queue.offer(new SignedEvent(net.instantiate(), null));
         } else {
-            System.out.println("Dispatching event " + event.getType().getName());
+            //System.out.println("Dispatching event " + event.getType().getName());
             behavior.dispatch(event, port);
         }
     }
@@ -63,7 +63,7 @@ public abstract class Component {
         started = true;
         SignedEvent se = queue.poll();
         while(se != null) {
-            System.out.println("Unqueuing event " + se.event.getType().getName());
+            //System.out.println("Unqueuing event " + se.event.getType().getName());
             behavior.dispatch(se.event, se.port);
             se = queue.poll();
         }
