@@ -6,6 +6,8 @@ import org.thingml.java.ext.NullEventType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -17,14 +19,15 @@ public abstract class Component {
     private final Map<Port, Connector> bindings;
     private final static NullConnector nullConnector = new NullConnector(null, null, null, null);
     public final String name;
-    private boolean started = false;
     private final NullEventType net = new NullEventType();
+    private Thread receiver;
 
-    private final Queue<SignedEvent> queue = new ConcurrentLinkedQueue<SignedEvent>();
+    private final BlockingQueue<SignedEvent> queue = new ArrayBlockingQueue<SignedEvent>(1024);
 
     public Component(String name) {
        this.name = name;
        bindings = new HashMap<Port, Connector>();
+
     }
 
     abstract protected Component buildBehavior();
@@ -48,26 +51,18 @@ public abstract class Component {
     }
 
     public void receive(Event event, Port port) {
-        if (!started) {
-            //System.out.println("Queuing event " + event.getType().getName());
-            queue.offer(new SignedEvent(event, port));
-            queue.offer(new SignedEvent(net.instantiate(), null));
-        } else {
-            //System.out.println("Dispatching event " + event.getType().getName());
-            behavior.dispatch(event, port);
+        try {
+            queue.put(new SignedEvent(event, port));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
     public void start() {
+        //receive(net.instantiate(), null);//it might be an auto-transition to be triggered right away
         behavior.onEntry();
-        started = true;
-        SignedEvent se = queue.poll();
-        while(se != null) {
-            //System.out.println("Unqueuing event " + se.event.getType().getName());
-            behavior.dispatch(se.event, se.port);
-            se = queue.poll();
-        }
-        receive(net.instantiate(), null);
+        receiver = new Thread(new Receiver(this));
+        receiver.start();
     }
 
     public void connect(Port p, Connector c) {
@@ -81,6 +76,31 @@ public abstract class Component {
         public SignedEvent(Event event, Port port) {
             this.event = event;
             this.port = port;
+        }
+    }
+
+    private class Receiver implements Runnable {
+
+        private Component cpt;
+
+        public Receiver(Component cpt) {
+            this.cpt = cpt;
+        }
+
+        @Override
+        public void run() {
+            queue.offer(new SignedEvent(net.instantiate(), null));
+            while(true) {
+                try {
+                    final SignedEvent se = queue.take();//should block if queue is empty, waiting for a message
+                    boolean status = behavior.dispatch(se.event, se.port);
+                    do { //check empty transition until they can not more be triggered
+                        status = behavior.dispatch(net.instantiate(), null);
+                    } while(status);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

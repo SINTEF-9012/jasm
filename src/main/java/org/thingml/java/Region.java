@@ -54,7 +54,7 @@ public final class Region /*implements IState*/ {
         }
         if (next != null) {
             current = next;
-            handle(net.instantiate(), null);
+            //handle(net.instantiate(), null);
             return true;
         }
         return false;
