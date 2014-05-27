@@ -20,7 +20,8 @@ public abstract class Component {
     private final static NullConnector nullConnector = new NullConnector(null, null, null, null);
     public final String name;
     private final NullEventType net = new NullEventType();
-    private Thread receiver;
+    private Receiver receiver;
+    private Thread receiverT;
 
     private final BlockingQueue<SignedEvent> queue = new ArrayBlockingQueue<SignedEvent>(1024);
 
@@ -61,8 +62,19 @@ public abstract class Component {
     public void start() {
         //receive(net.instantiate(), null);//it might be an auto-transition to be triggered right away
         behavior.onEntry();
-        receiver = new Thread(new Receiver(this));
-        receiver.start();
+        receiver = new Receiver();
+        receiverT = new Thread(new Receiver());
+        receiverT.start();
+    }
+
+    public void stop() {
+        receiver.active = false;
+        try {
+            receiverT.join(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        behavior.onExit();
     }
 
     public void connect(Port p, Connector c) {
@@ -81,22 +93,18 @@ public abstract class Component {
 
     private class Receiver implements Runnable {
 
-        private Component cpt;
-
-        public Receiver(Component cpt) {
-            this.cpt = cpt;
-        }
+        boolean active = true;
 
         @Override
         public void run() {
             queue.offer(new SignedEvent(net.instantiate(), null));
-            while(true) {
+            while(active) {
                 try {
                     final SignedEvent se = queue.take();//should block if queue is empty, waiting for a message
-                    boolean status = behavior.dispatch(se.event, se.port);
-                    do { //check empty transition until they can not more be triggered
-                        status = behavior.dispatch(net.instantiate(), null);
-                    } while(status);
+                    behavior.dispatch(se.event, se.port);
+                    while(behavior.dispatch(net.instantiate(), null)) {
+                        receiverT.sleep(0,1);
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
