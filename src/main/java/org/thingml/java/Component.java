@@ -31,7 +31,7 @@ public abstract class Component {
 
     }
 
-    abstract protected Component buildBehavior();
+    abstract public Component buildBehavior();
 
     boolean canSend(Event event, Port port) {return port.out.contains(event.getType());}
 
