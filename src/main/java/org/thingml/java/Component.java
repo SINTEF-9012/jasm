@@ -18,17 +18,28 @@ public abstract class Component {
     protected CompositeState behavior;
     private final Map<Port, Connector> bindings;
     private final static NullConnector nullConnector = new NullConnector(null, null, null, null);
-    public final String name;
+    private String name;
     private final NullEventType net = new NullEventType();
     private Receiver receiver;
     private Thread receiverT;
 
     private final BlockingQueue<SignedEvent> queue = new ArrayBlockingQueue<SignedEvent>(1024);
 
-    public Component(String name) {
-       this.name = name;
-       bindings = new HashMap<Port, Connector>();
+    public Component() {
+        bindings = new HashMap<Port, Connector>();
+    }
 
+    public Component(String name) {
+       this();
+       this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     abstract public Component buildBehavior();

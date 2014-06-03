@@ -30,7 +30,7 @@ public class HelloWorld extends Component {
         super(name);
     }
 
-    protected Component buildBehavior() {
+    public Component buildBehavior() {
         helloEventType = new HelloEventType();
 
         //Initialize ports
