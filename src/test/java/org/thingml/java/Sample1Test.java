@@ -48,7 +48,7 @@ public class Sample1Test extends TestCase {
         }
 
         @Override
-        protected Component buildBehavior() {
+        public Component buildBehavior() {
             //Event types
             final NullEventType nullEventType = new NullEventType();
 
