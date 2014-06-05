@@ -11,6 +11,8 @@ public class AtomicState implements IState {
     protected final String name;
     protected final IStateAction action;
 
+    public int ID;
+
     private final Logger log = Logger.getLogger(AtomicState.class.getName());
 
     public AtomicState(final String name) {
