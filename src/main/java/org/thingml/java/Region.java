@@ -38,7 +38,7 @@ public final class Region /*implements IState*/ {
         this.helper = new HandlerHelper().init(states, transitions);
     }
 
-    public synchronized boolean handle(final Event e, final Port port) {
+    public boolean handle(final Event e, final Port port) {
         IState next = null;
         if (current instanceof CompositeState) {
             final CompositeState c = (CompositeState) current;

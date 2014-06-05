@@ -31,7 +31,7 @@ public class CompositeState extends AtomicState {
         this.regions = Collections.unmodifiableList(reg);
     }
 
-    public synchronized boolean dispatch(final Event e, final Port port) {
+    public boolean dispatch(final Event e, final Port port) {
         boolean status = false;
         for(Region r : regions) {
             status = status | r.handle(e, port);//bitwise OR, and we need to execute r.handle no matter how
