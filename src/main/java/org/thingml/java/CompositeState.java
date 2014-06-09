@@ -31,10 +31,10 @@ public class CompositeState extends AtomicState {
         this.regions = Collections.unmodifiableList(reg);
     }
 
-    public boolean dispatch(final Event e) {
+    public boolean dispatch(final Event e, final Port p) {
         boolean status = false;
         for(Region r : regions) {
-            status = status | r.handle(e);//bitwise OR, and we need to execute r.handle no matter how
+            status = status | r.handle(e, p);//bitwise OR, and we need to execute r.handle no matter how
         }
         return status;
     }

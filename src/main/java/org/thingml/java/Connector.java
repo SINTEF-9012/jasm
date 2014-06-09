@@ -35,7 +35,7 @@ public class Connector {
 
     public synchronized void forward(Event e, Port p, Component c) {
         //if (c.canReceive(e, p)) {
-            c.receive(e);
+            c.receive(e, p);
         //}
     }
 

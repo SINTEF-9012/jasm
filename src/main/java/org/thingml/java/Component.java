@@ -1,6 +1,7 @@
 package org.thingml.java;
 
 import org.thingml.java.ext.Event;
+import org.thingml.java.ext.NullEvent;
 import org.thingml.java.ext.NullEventType;
 
 import java.util.HashMap;
@@ -19,13 +20,16 @@ public abstract class Component {
     private final Map<Port, Connector> bindings;
     private final static NullConnector nullConnector = new NullConnector(null, null, null, null);
     private String name;
-    private final NullEventType net = new NullEventType();
+
+    private final SignedEvent ne;
+
     private Receiver receiver;
     private Thread receiverT;
 
-    private final BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(1024);
+    private final BlockingQueue<SignedEvent> queue = new ArrayBlockingQueue<SignedEvent>(1024);
 
     public Component() {
+        ne = new SignedEvent(new NullEventType().instantiate(), null);
         bindings = new HashMap<Port, Connector>();
     }
 
@@ -62,9 +66,9 @@ public abstract class Component {
         }
     }
 
-    public void receive(Event event) {
+    public void receive(Event event, Port p) {
         try {
-            queue.put(event);
+            queue.put(new SignedEvent(event, p));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -92,7 +96,7 @@ public abstract class Component {
          bindings.put(p, c);
     }
 
-    /*private class SignedEvent{
+    private class SignedEvent{//TODO: find a way to get rid of them... without breaking everything :-)
         final Event event;
         final Port port;
 
@@ -100,7 +104,7 @@ public abstract class Component {
             this.event = event;
             this.port = port;
         }
-    }*/
+    }
 
     private class Receiver implements Runnable {
 
@@ -108,13 +112,13 @@ public abstract class Component {
 
         @Override
         public void run() {
-            queue.offer(net.instantiate());
+            queue.offer(ne);
             while(active) {
                 try {
-                    final Event se = queue.take();//should block if queue is empty, waiting for a message
-                    behavior.dispatch(se);
-                    while(behavior.dispatch(net.instantiate())) {
-                        receiverT.sleep(0,1);
+                    final SignedEvent se = queue.take();//should block if queue is empty, waiting for a message
+                    behavior.dispatch(se.event, se.port);
+                    while(behavior.dispatch(ne.event, null)) {
+                        //receiverT.sleep(0,1);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

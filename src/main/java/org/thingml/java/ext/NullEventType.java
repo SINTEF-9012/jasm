@@ -7,6 +7,6 @@ public final class NullEventType extends EventType {
     }
 
     public Event instantiate() {
-        return new NullEvent(this, null);
+        return new NullEvent(this);
     }
 }

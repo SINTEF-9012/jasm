@@ -8,20 +8,20 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class Event {
 
     private final EventType type;
-    private final Port port;
+    //private final Port port;
 
-    protected Event(final EventType type, final Port port)
+    protected Event(final EventType type/*, final Port port*/)
     {
         this.type = type;
-        this.port = port;
+        //this.port = port;
     }
 
     public EventType getType() {
         return type;
     }
 
-    public Port getPort() {
+    /*public Port getPort() {
         return port;
-    }
+    }*/
 
 }
