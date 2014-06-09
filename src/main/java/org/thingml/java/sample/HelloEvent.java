@@ -6,6 +6,7 @@
 
 package org.thingml.java.sample;
 
+import org.thingml.java.Port;
 import org.thingml.java.ext.Event;
 import org.thingml.java.ext.EventType;
 
@@ -18,8 +19,8 @@ public class HelloEvent extends Event {
 
     public final String who;
     
-    protected HelloEvent(EventType type, String who) {
-        super(type);
+    protected HelloEvent(EventType type, Port port, String who) {
+        super(type, port);
         this.who = who;
     }
     

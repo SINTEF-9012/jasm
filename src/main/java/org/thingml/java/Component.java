@@ -23,7 +23,7 @@ public abstract class Component {
     private Receiver receiver;
     private Thread receiverT;
 
-    private final BlockingQueue<SignedEvent> queue = new ArrayBlockingQueue<SignedEvent>(1024);
+    private final BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(1024);
 
     public Component() {
         bindings = new HashMap<Port, Connector>();
@@ -62,9 +62,9 @@ public abstract class Component {
         }
     }
 
-    public void receive(Event event, Port port) {
+    public void receive(Event event) {
         try {
-            queue.put(new SignedEvent(event, port));
+            queue.put(event);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -92,7 +92,7 @@ public abstract class Component {
          bindings.put(p, c);
     }
 
-    private class SignedEvent{
+    /*private class SignedEvent{
         final Event event;
         final Port port;
 
@@ -100,7 +100,7 @@ public abstract class Component {
             this.event = event;
             this.port = port;
         }
-    }
+    }*/
 
     private class Receiver implements Runnable {
 
@@ -108,12 +108,12 @@ public abstract class Component {
 
         @Override
         public void run() {
-            queue.offer(new SignedEvent(net.instantiate(), null));
+            queue.offer(net.instantiate());
             while(active) {
                 try {
-                    final SignedEvent se = queue.take();//should block if queue is empty, waiting for a message
-                    behavior.dispatch(se.event, se.port);
-                    while(behavior.dispatch(net.instantiate(), null)) {
+                    final Event se = queue.take();//should block if queue is empty, waiting for a message
+                    behavior.dispatch(se);
+                    while(behavior.dispatch(net.instantiate())) {
                         receiverT.sleep(0,1);
                     }
                 } catch (InterruptedException e) {

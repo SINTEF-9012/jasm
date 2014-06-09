@@ -38,19 +38,19 @@ public final class Region /*implements IState*/ {
         this.helper = new HandlerHelper().init(states, transitions);
     }
 
-    public boolean handle(final Event e, final Port port) {
+    public boolean handle(final Event e) {
         IState next = null;
         if (current instanceof CompositeState) {
             final CompositeState c = (CompositeState) current;
             boolean status = false;
             for(Region r : c.regions) {//we check if a region can consume the event
-                status = status | r.handle(e, port);//using the bitwise operator on boolean as we do not want a shortcut (all regions have to handle the event)
+                status = status | r.handle(e);//using the bitwise operator on boolean as we do not want a shortcut (all regions have to handle the event)
             }
             if (!status) {//if not, the composite can (try to) consume it
-                next = helper.getActiveHandler(c, e, port).execute(e);
+                next = helper.getActiveHandler(c, e, e.getPort()).execute(e);
             }
         } else {
-            next = helper.getActiveHandler(current, e, port).execute(e);
+            next = helper.getActiveHandler(current, e, e.getPort()).execute(e);
         }
         if (next != null) {
             current = next;

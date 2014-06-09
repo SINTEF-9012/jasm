@@ -6,6 +6,7 @@
 
 package org.thingml.java.sample;
 
+import org.thingml.java.Port;
 import org.thingml.java.ext.Event;
 import org.thingml.java.ext.EventType;
 
@@ -19,8 +20,8 @@ public class HelloEventType extends EventType {
         name = "hello";
     }
     
-    public Event instantiate(String who) {
-        return new HelloEvent(this, who);    
+    public Event instantiate(Port port, String who) {
+        return new HelloEvent(this, port, who);
     }
 
 }
