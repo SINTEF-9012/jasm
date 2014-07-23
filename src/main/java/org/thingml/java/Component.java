@@ -83,13 +83,17 @@ public abstract class Component {
     }
 
     public void stop() {
-        receiver.active = false;
-        try {
-            receiverT.join(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (receiver != null) {
+            receiver.active = false;
+            try {
+                receiverT.join(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        behavior.onExit();
+        if (behavior != null) {
+            behavior.onExit();
+        }
     }
 
     public void connect(Port p, Connector c) {
