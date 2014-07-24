@@ -77,8 +77,12 @@ public abstract class Component {
     public void start() {
         //receive(net.instantiate(), null);//it might be an auto-transition to be triggered right away
         behavior.onEntry();
-        receiver = new Receiver();
-        receiverT = new Thread(new Receiver());
+        if (receiver == null) {
+            receiver = new Receiver();
+        } else {
+            receiver.active = true;
+        }
+        receiverT = new Thread(receiver);
         receiverT.start();
     }
 
