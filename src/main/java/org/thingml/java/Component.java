@@ -26,7 +26,7 @@ public abstract class Component {
     private Receiver receiver;
     private Thread receiverT;
 
-    private final BlockingQueue<SignedEvent> queue = new ArrayBlockingQueue<SignedEvent>(1024);
+    protected BlockingQueue<SignedEvent> queue = new ArrayBlockingQueue<SignedEvent>(1024);
 
     public Component() {
         ne = new SignedEvent(new NullEventType().instantiate(), null);
@@ -104,7 +104,7 @@ public abstract class Component {
          bindings.put(p, c);
     }
 
-    private class SignedEvent{//TODO: find a way to get rid of them... without breaking everything :-)
+    protected class SignedEvent{//TODO: find a way to get rid of them... without breaking everything :-)
         final Event event;
         final Port port;
 
