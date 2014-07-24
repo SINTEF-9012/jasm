@@ -90,7 +90,7 @@ public abstract class Component {
         if (receiver != null) {
             receiver.active = false;
             try {
-                receiverT.join(100);
+                receiverT.join(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -125,7 +125,7 @@ public abstract class Component {
                 try {
                     final SignedEvent se = queue.take();//should block if queue is empty, waiting for a message
                     behavior.dispatch(se.event, se.port);
-                    while(behavior.dispatch(ne.event, null)) {
+                    while (behavior.dispatch(ne.event, null)) {
                         //receiverT.sleep(0,1);
                     }
                 } catch (InterruptedException e) {
