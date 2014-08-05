@@ -21,15 +21,16 @@ public abstract class Component {
     private final static NullConnector nullConnector = new NullConnector(null, null, null, null);
     private String name;
 
-    private final SignedEvent ne;
+    //private final SignedEvent ne;
+    private final Event ne = new NullEventType().instantiate(null);
 
     private Receiver receiver;
     private Thread receiverT;
 
-    protected BlockingQueue<SignedEvent> queue = new ArrayBlockingQueue<SignedEvent>(1024);
+    protected BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(1024);
 
     public Component() {
-        ne = new SignedEvent(new NullEventType().instantiate(), null);
+        //ne = new SignedEvent(new NullEventType().instantiate(), null);
         bindings = new HashMap<Port, Connector>();
     }
 
@@ -66,9 +67,10 @@ public abstract class Component {
         }
     }
 
-    public void receive(Event event, Port p) {
+    public void receive(Event event, final Port p) {
         try {
-            queue.put(new SignedEvent(event, p));
+            event.setPort(p);
+            queue.put(event);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -104,7 +106,7 @@ public abstract class Component {
          bindings.put(p, c);
     }
 
-    protected class SignedEvent{//TODO: find a way to get rid of them... without breaking everything :-)
+    /*protected class SignedEvent{//TODO: find a way to get rid of them... without breaking everything :-)
         final Event event;
         final Port port;
 
@@ -112,7 +114,7 @@ public abstract class Component {
             this.event = event;
             this.port = port;
         }
-    }
+    }*/
 
     private class Receiver implements Runnable {
 
@@ -123,9 +125,9 @@ public abstract class Component {
             queue.offer(ne);
             while(active) {
                 try {
-                    final SignedEvent se = queue.take();//should block if queue is empty, waiting for a message
-                    behavior.dispatch(se.event, se.port);
-                    while (behavior.dispatch(ne.event, null)) {
+                    final Event e = queue.take();//should block if queue is empty, waiting for a message
+                    behavior.dispatch(e, e.getPort());
+                    while (behavior.dispatch(ne, null)) {
                         //receiverT.sleep(0,1);
                     }
                 } catch (InterruptedException e) {

@@ -58,7 +58,7 @@ public class HelloWorld extends Component {
     public static void main(String args[]) {
          HelloWorld hw = (HelloWorld) new HelloWorld("HelloWorld").buildBehavior();
          hw.start();
-         hw.receive(hw.helloEventType.instantiate("world"), hw.p1);
+         hw.receive(hw.helloEventType.instantiate(hw.p1, "world"), hw.p1);
     }
 
     private final class HelloHandlerAction implements IHandlerAction {

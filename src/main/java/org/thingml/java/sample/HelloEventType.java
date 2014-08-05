@@ -20,8 +20,8 @@ public class HelloEventType extends EventType {
         name = "hello";
     }
     
-    public Event instantiate(String who) {
-        return new HelloEvent(this, who);
+    public Event instantiate(Port port, String who) {
+        return new HelloEvent(this, port, who);
     }
 
 }

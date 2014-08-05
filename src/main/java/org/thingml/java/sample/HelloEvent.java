@@ -19,8 +19,8 @@ public class HelloEvent extends Event {
 
     public final String who;
     
-    protected HelloEvent(EventType type, String who) {
-        super(type);
+    protected HelloEvent(EventType type, Port port, String who) {
+        super(type, port);
         this.who = who;
     }
     
