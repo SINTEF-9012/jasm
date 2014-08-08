@@ -41,15 +41,18 @@ public final class Region /*implements IState*/ {
             final CompositeState c = (CompositeState) current;
             if (!c.dispatch(e, p)) {//if not, the composite can (try to) consume it
                 next = helper.getActiveHandler(c, e, p);
+                IState ns = next.execute(e);
+                current = ns == null ? current : ns;
+                return ns != null;
+            } else {
+                return true;
             }
         } else {
             next = helper.getActiveHandler(current, e, p);
+            IState ns = next.execute(e);
+            current = ns == null ? current : ns;
+            return ns != null;
         }
-        if (! ((next == null) || (next instanceof NullHandler))) {
-            current = next.execute(e);
-            return true;
-        }
-        return false;
     }
 
     public String getName() {
