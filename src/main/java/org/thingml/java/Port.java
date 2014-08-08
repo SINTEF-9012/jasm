@@ -1,6 +1,5 @@
 package org.thingml.java;
 
-import org.thingml.java.ext.Event;
 import org.thingml.java.ext.EventType;
 
 import java.util.Collections;

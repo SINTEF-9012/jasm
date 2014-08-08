@@ -1,15 +1,12 @@
 package org.thingml.java;
 
 import org.thingml.java.ext.Event;
-import org.thingml.java.ext.NullEvent;
 import org.thingml.java.ext.NullEventType;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by bmori on 29.04.2014.
@@ -35,8 +32,8 @@ public abstract class Component {
     }
 
     public Component(String name) {
-       this();
-       this.name = name;
+        this();
+        this.name = name;
     }
 
     public String getName() {
@@ -49,20 +46,24 @@ public abstract class Component {
 
     abstract public Component buildBehavior();
 
-    boolean canSend(Event event, Port port) {return port.out.contains(event.getType());}
+    boolean canSend(Event event, Port port) {
+        return port.out.contains(event.getType());
+    }
 
-    boolean canReceive(Event event, Port port) {return port.in.contains(event.getType());}
+    boolean canReceive(Event event, Port port) {
+        return port.in.contains(event.getType());
+    }
 
     public void send(Event event, Port port) {
         Connector c = bindings.get(port);
         if (c == null) c = nullConnector;
         switch (port.type) {
-             case PROVIDED:
-                 c.onProvided(event);
-                 break;
-             case REQUIRED:
-                 c.onRequired(event);
-                 break;
+            case PROVIDED:
+                c.onProvided(event);
+                break;
+            case REQUIRED:
+                c.onRequired(event);
+                break;
 
         }
     }
@@ -103,7 +104,7 @@ public abstract class Component {
     }
 
     public void connect(Port p, Connector c) {
-         bindings.put(p, c);
+        bindings.put(p, c);
     }
 
     /*protected class SignedEvent{//TODO: find a way to get rid of them... without breaking everything :-)
@@ -123,7 +124,7 @@ public abstract class Component {
         @Override
         public void run() {
             queue.offer(ne);
-            while(active) {
+            while (active) {
                 try {
                     final Event e = queue.take();//should block if queue is empty, waiting for a message
                     behavior.dispatch(e, e.getPort());

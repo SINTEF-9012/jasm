@@ -1,7 +1,6 @@
 package org.thingml.java;
 
 import org.thingml.java.ext.Event;
-import org.thingml.java.ext.NullEvent;
 import org.thingml.java.ext.NullEventType;
 
 import java.util.Collections;
@@ -9,7 +8,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- *
  * @author bmori
  */
 public final class Region /*implements IState*/ {
@@ -42,11 +40,11 @@ public final class Region /*implements IState*/ {
         IState next = null;
         if (current instanceof CompositeState) {
             final CompositeState c = (CompositeState) current;
-            boolean status = false;
-            for(Region r : c.regions) {//we check if a region can consume the event
-                status = status | r.handle(e, p);//using the bitwise operator on boolean as we do not want a shortcut (all regions have to handle the event)
+            boolean consumed = false;
+            for (Region r : c.regions) {//we check if a region can consume the event
+                consumed = consumed | r.handle(e, p);//using the bitwise operator on boolean as we do not want a shortcut (all regions have to handle the event)
             }
-            if (!status) {//if not, the composite can (try to) consume it
+            if (!consumed) {//if not, the composite can (try to) consume it
                 next = helper.getActiveHandler(c, e, p).execute(e);
             }
         } else {
@@ -54,7 +52,6 @@ public final class Region /*implements IState*/ {
         }
         if (next != null) {
             current = next;
-            //handle(net.instantiate(), null);
             return true;
         }
         return false;

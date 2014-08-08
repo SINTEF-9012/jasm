@@ -5,17 +5,16 @@
  */
 package org.thingml.java;
 
-import org.thingml.java.*;
-import org.thingml.java.ext.*;
+import junit.framework.TestCase;
+import org.thingml.java.ext.DebugHandlerAction;
+import org.thingml.java.ext.DebugStateAction;
+import org.thingml.java.ext.NullEventType;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import junit.framework.*;
-
 /**
- *
  * @author bmori
  */
 public class Sample1Test extends TestCase {

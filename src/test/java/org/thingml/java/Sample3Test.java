@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
  * @author bmori
  */
 public class Sample3Test extends TestCase {

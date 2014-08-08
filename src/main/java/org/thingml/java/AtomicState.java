@@ -1,6 +1,5 @@
 package org.thingml.java;
 
-import org.thingml.java.ext.Event;
 import org.thingml.java.ext.IStateAction;
 import org.thingml.java.ext.NullStateAction;
 
@@ -38,9 +37,9 @@ public class AtomicState implements IState {
     public String getName() {
         return name;
     }
-    
+
     public String toString() {
         return "Atomic state " + name;
     }
-    
+
 }

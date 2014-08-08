@@ -33,7 +33,7 @@ public class CompositeState extends AtomicState {
 
     public boolean dispatch(final Event e, final Port p) {
         boolean status = false;
-        for(Region r : regions) {
+        for (Region r : regions) {
             status = status | r.handle(e, p);//bitwise OR, and we need to execute r.handle no matter how
         }
         return status;
@@ -46,14 +46,14 @@ public class CompositeState extends AtomicState {
     public void onEntry() {
         log.finest(this + " on entry at " + System.currentTimeMillis());
         super.onEntry();
-        for(Region r : regions) {
+        for (Region r : regions) {
             r.onEntry();
         }
     }
 
     public void onExit() {
         log.finest(this + " on exit at " + System.currentTimeMillis());
-        for(Region r : regions) {
+        for (Region r : regions) {
             r.onExit();
         }
         super.onExit();

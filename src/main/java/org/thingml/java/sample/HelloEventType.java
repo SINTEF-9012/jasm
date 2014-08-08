@@ -11,7 +11,6 @@ import org.thingml.java.ext.Event;
 import org.thingml.java.ext.EventType;
 
 /**
- *
  * @author bmori
  */
 public class HelloEventType extends EventType {
@@ -19,7 +18,7 @@ public class HelloEventType extends EventType {
     public HelloEventType() {
         name = "hello";
     }
-    
+
     public Event instantiate(Port port, String who) {
         return new HelloEvent(this, port, who);
     }

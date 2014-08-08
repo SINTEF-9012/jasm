@@ -7,7 +7,7 @@ import org.thingml.java.ext.IHandlerAction;
 public final class Transition extends Handler {
 
     private final IState target;
-    
+
     public Transition(final String name, final IHandlerAction action, final EventType event, final Port port, final IState source, final IState target) {
         super(name, action, event, port, source);
         this.target = target;
@@ -23,5 +23,5 @@ public final class Transition extends Handler {
     public IState getTarget() {
         return target;
     }
-   
+
 }

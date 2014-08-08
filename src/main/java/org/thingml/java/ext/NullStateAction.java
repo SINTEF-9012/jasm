@@ -6,7 +6,7 @@ public final class NullStateAction implements IStateAction {
     }
 
     public void onEntry() {
-		//Do nothing
+        //Do nothing
 
     }
 

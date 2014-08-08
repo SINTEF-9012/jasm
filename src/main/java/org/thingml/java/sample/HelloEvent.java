@@ -12,16 +12,15 @@ import org.thingml.java.ext.EventType;
 
 
 /**
- *
  * @author bmori
  */
 public class HelloEvent extends Event {
 
     public final String who;
-    
+
     protected HelloEvent(EventType type, Port port, String who) {
         super(type, port);
         this.who = who;
     }
-    
+
 }

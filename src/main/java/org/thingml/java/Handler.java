@@ -21,7 +21,7 @@ public abstract class Handler implements IHandler {
     }
 
     public boolean check(final Event e, final Port p) {
-        return ((p==null) || p.equals(port)) && (e.getType().equals(event)) && action.check(e, event);
+        return ((p == null) || p.equals(port)) && (e.getType().equals(event)) && action.check(e, event);
     }
 
     public String getName() {
@@ -39,7 +39,6 @@ public abstract class Handler implements IHandler {
     public IHandlerAction getAction() {
         return action;
     }
-    
-    
+
 
 }

@@ -11,11 +11,11 @@ import org.thingml.java.ext.EventType;
 import org.thingml.java.ext.IHandlerAction;
 import org.thingml.java.ext.NullStateAction;
 
-import java.util.*;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
- *
  * @author bmori
  */
 public class HelloWorld extends Component {
@@ -56,14 +56,15 @@ public class HelloWorld extends Component {
     }
 
     public static void main(String args[]) {
-         HelloWorld hw = (HelloWorld) new HelloWorld("HelloWorld").buildBehavior();
-         hw.start();
-         hw.receive(hw.helloEventType.instantiate(hw.p1, "world"), hw.p1);
+        HelloWorld hw = (HelloWorld) new HelloWorld("HelloWorld").buildBehavior();
+        hw.start();
+        hw.receive(hw.helloEventType.instantiate(hw.p1, "world"), hw.p1);
     }
 
     private final class HelloHandlerAction implements IHandlerAction {
 
-        public HelloHandlerAction() { }
+        public HelloHandlerAction() {
+        }
 
         public boolean check(final Event e, final EventType t) {
             return true;
