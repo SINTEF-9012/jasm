@@ -1,7 +1,6 @@
 package org.thingml.java;
 
 import org.thingml.java.ext.Event;
-import org.thingml.java.ext.NullEventType;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +22,7 @@ public final class Region /*implements IState*/ {
 
     protected final Logger log = Logger.getLogger(Region.class.getName());
 
-    private final NullEventType net = new NullEventType();
+    //private final NullEventType net = new NullEventType();
 
     public Region(final String name, final List<IState> states, final IState initial, final List<Handler> transitions, final boolean keepHistory) {
         this.name = name;
@@ -37,21 +36,17 @@ public final class Region /*implements IState*/ {
     }
 
     public boolean handle(final Event e, final Port p) {
-        IState next = null;
+        IHandler next = null;
         if (current instanceof CompositeState) {
             final CompositeState c = (CompositeState) current;
-            boolean consumed = false;
-            for (Region r : c.regions) {//we check if a region can consume the event
-                consumed = consumed | r.handle(e, p);//using the bitwise operator on boolean as we do not want a shortcut (all regions have to handle the event)
-            }
-            if (!consumed) {//if not, the composite can (try to) consume it
-                next = helper.getActiveHandler(c, e, p).execute(e);
+            if (!c.dispatch(e, p)) {//if not, the composite can (try to) consume it
+                next = helper.getActiveHandler(c, e, p);
             }
         } else {
-            next = helper.getActiveHandler(current, e, p).execute(e);
+            next = helper.getActiveHandler(current, e, p);
         }
-        if (next != null) {
-            current = next;
+        if (! ((next == null) || (next instanceof NullHandler))) {
+            current = next.execute(e);
             return true;
         }
         return false;

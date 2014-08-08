@@ -32,11 +32,11 @@ public class CompositeState extends AtomicState {
     }
 
     public boolean dispatch(final Event e, final Port p) {
-        boolean status = false;
+        boolean consumed = false;
         for (Region r : regions) {
-            status = status | r.handle(e, p);//bitwise OR, and we need to execute r.handle no matter how
+            consumed = consumed | r.handle(e, p);//bitwise OR, and we need to execute r.handle no matter how
         }
-        return status;
+        return consumed;
     }
 
     public String toString() {

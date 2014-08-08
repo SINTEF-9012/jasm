@@ -107,16 +107,6 @@ public abstract class Component {
         bindings.put(p, c);
     }
 
-    /*protected class SignedEvent{//TODO: find a way to get rid of them... without breaking everything :-)
-        final Event event;
-        final Port port;
-
-        public SignedEvent(Event event, Port port) {
-            this.event = event;
-            this.port = port;
-        }
-    }*/
-
     private class Receiver implements Runnable {
 
         boolean active = true;
