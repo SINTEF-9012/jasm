@@ -15,6 +15,17 @@ import java.util.List;
 public class HandlerHelper {
 
     private IHandler[][] handlers;
+    private IHandler nullHandler = new IHandler() {
+        @Override
+        public boolean check(Event e, Port p) {
+            return true;
+        }
+
+        @Override
+        public IState execute(Event e) {
+            return null;
+        }
+    };
 
     public HandlerHelper() {
 
@@ -51,16 +62,6 @@ public class HandlerHelper {
                 return h;
             }
         }
-        return new IHandler() {
-            @Override
-            public boolean check(Event e, Port p) {
-                return true;
-            }
-
-            @Override
-            public IState execute(Event e) {
-                return null;
-            }
-        };
+        return nullHandler;
     }
 }
