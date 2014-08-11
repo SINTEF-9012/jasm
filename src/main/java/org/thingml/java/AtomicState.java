@@ -33,5 +33,9 @@ public class AtomicState implements IState {
     public String toString() {
         return "Atomic state " + name;
     }
+    
+    public int getID() {
+        return ID;
+    }
 
 }

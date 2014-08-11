@@ -57,8 +57,8 @@ public class HandlerHelper {
     }
 
     public IHandler getActiveHandler(final IState current, final Event e, final Port port) {
-        for (IHandler h : handlers[((AtomicState) current).ID]) {
-            if (h != null && h.check(e, port)) {
+        for (IHandler h : handlers[current.getID()]) {
+            if (h.check(e, port)) {
                 return h;
             }
         }

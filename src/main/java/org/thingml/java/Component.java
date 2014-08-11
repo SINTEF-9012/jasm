@@ -69,12 +69,8 @@ public abstract class Component {
     }
 
     public void receive(Event event, final Port p) {
-        try {
-            event.setPort(p);
-            queue.put(event);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        event.setPort(p);
+        queue.offer(event);
     }
 
     public void start() {

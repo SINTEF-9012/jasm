@@ -5,5 +5,7 @@ public interface IState {
     void onEntry();
 
     void onExit();
+    
+    int getID();
 
 }
