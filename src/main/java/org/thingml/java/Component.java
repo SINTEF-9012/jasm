@@ -15,7 +15,6 @@ public abstract class Component {
 
     protected CompositeState behavior;
     private final Map<Port, Connector> bindings;
-    private final static NullConnector nullConnector = new NullConnector(null, null, null, null);
     private String name;
 
     //private final SignedEvent ne;
@@ -56,16 +55,8 @@ public abstract class Component {
 
     public void send(Event event, Port port) {
         Connector c = bindings.get(port);
-        if (c == null) c = nullConnector;
-        switch (port.type) {
-            case PROVIDED:
-                c.onProvided(event);
-                break;
-            case REQUIRED:
-                c.onRequired(event);
-                break;
-
-        }
+        if (c != null)
+            c.onEvent(event, this);
     }
 
     public void receive(Event event, final Port p) {

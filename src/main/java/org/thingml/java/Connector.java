@@ -22,15 +22,13 @@ public class Connector {
     protected void connect() {
         client.connect(required, this);
         server.connect(provided, this);
-
     }
 
-    public void onProvided(Event e) {
-        forward(e, required, client);
-    }
-
-    public void onRequired(Event e) {
-        forward(e, provided, server);
+    public void onEvent(Event e, Component source) {
+        if (client.equals(source))
+            forward(e, provided, server);
+        else
+           forward(e, required, client);
     }
 
     public synchronized void forward(Event e, Port p, Component c) {
