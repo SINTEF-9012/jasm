@@ -28,8 +28,8 @@ public final class Region /*implements IState*/ {
         this.name = name;
         this.initial = initial;
         this.keepHistory = keepHistory;
-        this.states = Collections.unmodifiableList(states);
-        this.transitions = Collections.unmodifiableList(transitions);
+        this.states = states;
+        this.transitions = transitions;
 
         this.current = this.initial;
         this.helper = new HandlerHelper().init(states, transitions);

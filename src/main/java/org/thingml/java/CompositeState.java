@@ -27,7 +27,7 @@ public class CompositeState extends AtomicState {
         Region r = new Region("default", states, initial, transitions, keepHistory);
         List<Region> reg = new ArrayList<Region>(regions);
         reg.add(0, r);//we add the default region first
-        this.regions = Collections.unmodifiableList(reg);
+        this.regions = reg;
     }
 
     public boolean dispatch(final Event e, final Port p) {
