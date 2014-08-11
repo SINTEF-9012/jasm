@@ -51,6 +51,16 @@ public class HandlerHelper {
                 return h;
             }
         }
-        return new NullHandler(e.getType(), current);
+        return new IHandler() {
+            @Override
+            public boolean check(Event e, Port p) {
+                return true;
+            }
+
+            @Override
+            public IState execute(Event e) {
+                return null;
+            }
+        };
     }
 }

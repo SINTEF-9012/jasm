@@ -6,8 +6,6 @@
 package org.thingml.java;
 
 import junit.framework.TestCase;
-import org.thingml.java.ext.DebugHandlerAction;
-import org.thingml.java.ext.DebugStateAction;
 import org.thingml.java.ext.NullEventType;
 
 import java.util.ArrayList;
@@ -69,9 +67,9 @@ public class Sample3Test extends TestCase {
 
 
             //Default region of composite
-            IState s1 = new AtomicState("s1", new DebugStateAction("s1"));
-            s2 = new AtomicState("s2", new DebugStateAction("s2"));
-            Transition t1 = new Transition("t1", new DebugHandlerAction(), nullEventType, null, s1, s2);
+            IState s1 = new AtomicState("s1");
+            s2 = new AtomicState("s2");
+            Transition t1 = new Transition("t1", nullEventType, null, s1, s2);
 
             List<IState> states = new ArrayList<IState>();
             states.add(s1);
@@ -82,9 +80,9 @@ public class Sample3Test extends TestCase {
 
 
             //region 1
-            IState s1_r = new AtomicState("s1_r", new DebugStateAction("s1_r"));
-            s2_r = new AtomicState("s2_r", new DebugStateAction("s2_r"));
-            Transition t1_r = new Transition("t1_r", new DebugHandlerAction(), nullEventType, null, s1_r, s2_r);
+            IState s1_r = new AtomicState("s1_r");
+            s2_r = new AtomicState("s2_r");
+            Transition t1_r = new Transition("t1_r", nullEventType, null, s1_r, s2_r);
 
             List<IState> states_r = new ArrayList<IState>();
             states_r.add(s1_r);
@@ -95,7 +93,7 @@ public class Sample3Test extends TestCase {
             Region r = new Region("r", states_r, s1_r, transitions_r, false);
 
             //region 2
-            s1_r2 = new AtomicState("s1_r2", new DebugStateAction("s1_r2"));
+            s1_r2 = new AtomicState("s1_r2");
             List<IState> states_r2 = new ArrayList<IState>();
             states_r2.add(s1_r2);
             Region r2 = new Region("r2", states_r2, s1_r2, Collections.EMPTY_LIST, false);
@@ -106,15 +104,15 @@ public class Sample3Test extends TestCase {
             regions.add(r);
             regions.add(r2);
 
-            c = new CompositeState("c", states, s1, transitions, new DebugStateAction("c"), regions, false);
+            c = new CompositeState("c", states, s1, transitions, regions, false);
 
 
             //Root composite
             //Default region of root composite
-            IState s1_root = new AtomicState("s1_root", new DebugStateAction("s1_root"));
-            IState s2_root = new AtomicState("s2_root", new DebugStateAction("s2_root"));
-            Transition t1_root = new Transition("t1_root", new DebugHandlerAction(), nullEventType, null, s1_root, s2_root);
-            Transition t2_root = new Transition("t2_root", new DebugHandlerAction(), nullEventType, null, s2_root, c);
+            IState s1_root = new AtomicState("s1_root");
+            IState s2_root = new AtomicState("s2_root");
+            Transition t1_root = new Transition("t1_root", nullEventType, null, s1_root, s2_root);
+            Transition t2_root = new Transition("t2_root", nullEventType, null, s2_root, c);
 
             List<IState> states_root = new ArrayList<IState>();
             states_root.add(s1_root);
@@ -125,7 +123,7 @@ public class Sample3Test extends TestCase {
             transitions_root.add(t1_root);
             transitions_root.add(t2_root);
 
-            behavior = new CompositeState("root", states_root, s1_root, transitions_root, new DebugStateAction("root"), Collections.EMPTY_LIST, false);
+            behavior = new CompositeState("root", states_root, s1_root, transitions_root, Collections.EMPTY_LIST, false);
             return this;
         }
     }

@@ -36,23 +36,12 @@ public final class Region /*implements IState*/ {
     }
 
     public boolean handle(final Event e, final Port p) {
-        IHandler next = null;
-        if (current instanceof CompositeState) {
-            final CompositeState c = (CompositeState) current;
-            if (!c.dispatch(e, p)) {//if not, the composite can (try to) consume it
-                next = helper.getActiveHandler(c, e, p);
-                IState ns = next.execute(e);
-                current = ns == null ? current : ns;
-                return ns != null;
-            } else {
-                return true;
-            }
-        } else {
-            next = helper.getActiveHandler(current, e, p);
-            IState ns = next.execute(e);
-            current = ns == null ? current : ns;
-            return ns != null;
+        final IState next = ((AtomicState) current).handle(e, p, helper);
+        if (next != null) {
+            current = next;
+            return true;
         }
+        return false;
     }
 
     public String getName() {

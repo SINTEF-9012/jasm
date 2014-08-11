@@ -1,14 +1,12 @@
 package org.thingml.java;
 
-import org.thingml.java.ext.IStateAction;
-import org.thingml.java.ext.NullStateAction;
+import org.thingml.java.ext.Event;
 
 import java.util.logging.Logger;
 
 public class AtomicState implements IState {
 
     protected final String name;
-    protected final IStateAction action;
 
     public int ID;
 
@@ -16,22 +14,16 @@ public class AtomicState implements IState {
 
     public AtomicState(final String name) {
         this.name = name;
-        this.action = new NullStateAction();
-    }
-
-    public AtomicState(final String name, final IStateAction action) {
-        this.name = name;
-        this.action = action;
     }
 
     public void onEntry() {
-        log.finest(this + " on entry at " + System.currentTimeMillis());
-        action.onEntry();
-    }
+    }//by default, do nothing
 
     public void onExit() {
-        log.finest(this + " on exit at " + System.currentTimeMillis());
-        action.onExit();
+    }//by default, do nothing
+
+    protected IState handle(Event e, Port p, HandlerHelper helper) {
+        return helper.getActiveHandler(this, e, p).execute(e);
     }
 
     public String getName() {

@@ -1,7 +1,6 @@
 package org.thingml.java;
 
 import org.thingml.java.ext.Event;
-import org.thingml.java.ext.IStateAction;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,12 +18,12 @@ public class CompositeState extends AtomicState {
 
     protected final Logger log = Logger.getLogger(AtomicState.class.getName());
 
-    public CompositeState(final String name, final List<IState> states, final IState initial, final List<Handler> transitions, final IStateAction action) {
-        this(name, states, initial, transitions, action, Collections.EMPTY_LIST, false);
+    public CompositeState(final String name, final List<IState> states, final IState initial, final List<Handler> transitions) {
+        this(name, states, initial, transitions, Collections.EMPTY_LIST, false);
     }
 
-    public CompositeState(final String name, final List<IState> states, final IState initial, final List<Handler> transitions, final IStateAction action, final List<Region> regions, final boolean keepHistory) {
-        super(name, action);
+    public CompositeState(final String name, final List<IState> states, final IState initial, final List<Handler> transitions, final List<Region> regions, final boolean keepHistory) {
+        super(name);
         Region r = new Region("default", states, initial, transitions, keepHistory);
         List<Region> reg = new ArrayList<Region>(regions);
         reg.add(0, r);//we add the default region first
@@ -57,6 +56,14 @@ public class CompositeState extends AtomicState {
             r.onExit();
         }
         super.onExit();
+    }
+
+    protected IState handle(Event e, Port p, HandlerHelper helper) {
+        if (!dispatch(e, p)) {//if not, the composite can (try to) consume it
+            return super.handle(e, p, helper);
+        } else {
+            return this;
+        }
     }
 
     public List<Region> getRegions() {
