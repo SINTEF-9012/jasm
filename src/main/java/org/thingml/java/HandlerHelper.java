@@ -15,6 +15,7 @@ import java.util.List;
 public class HandlerHelper {
 
     private IHandler[][] handlers;
+    
     private IHandler nullHandler = new IHandler() {
         @Override
         public boolean check(Event e, Port p) {

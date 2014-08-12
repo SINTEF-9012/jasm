@@ -5,7 +5,6 @@ import org.thingml.java.ext.Event;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Composite are containers for regions
@@ -15,8 +14,7 @@ import java.util.logging.Logger;
 public class CompositeState extends AtomicState {
 
     protected final List<Region> regions;
-
-    protected final Logger log = Logger.getLogger(AtomicState.class.getName());
+    private final int size;
 
     public CompositeState(final String name, final List<IState> states, final IState initial, final List<Handler> transitions) {
         this(name, states, initial, transitions, Collections.EMPTY_LIST, false);
@@ -28,13 +26,17 @@ public class CompositeState extends AtomicState {
         List<Region> reg = new ArrayList<Region>(regions);
         reg.add(0, r);//we add the default region first
         this.regions = reg;
+        this.size = this.regions.size();
     }
 
     public boolean dispatch(final Event e, final Port p) {
         boolean consumed = false;
-        for (Region r : regions) {
-            consumed = consumed | r.handle(e, p);//bitwise OR, and we need to execute r.handle no matter how
+        for(int i = 0; i<size; i++) {
+            consumed = consumed | regions.get(i).handle(e, p);
         }
+        /*for (Region r : regions) {
+            consumed = consumed | r.handle(e, p);//bitwise OR, and we need to execute r.handle no matter how
+        }*/
         return consumed;
     }
 
@@ -43,7 +45,6 @@ public class CompositeState extends AtomicState {
     }
 
     public void onEntry() {
-        log.finest(this + " on entry at " + System.currentTimeMillis());
         super.onEntry();
         for (Region r : regions) {
             r.onEntry();
@@ -51,7 +52,6 @@ public class CompositeState extends AtomicState {
     }
 
     public void onExit() {
-        log.finest(this + " on exit at " + System.currentTimeMillis());
         for (Region r : regions) {
             r.onExit();
         }

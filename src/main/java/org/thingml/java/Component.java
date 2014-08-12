@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 
 /**
  * Created by bmori on 29.04.2014.
@@ -14,7 +15,7 @@ import java.util.concurrent.BlockingQueue;
 public abstract class Component {
 
     protected CompositeState behavior;
-    private final Map<Port, Connector> bindings;
+    private final Map<String, Connector> bindings;
     private String name;
 
     //private final SignedEvent ne;
@@ -23,11 +24,11 @@ public abstract class Component {
     private Receiver receiver;
     private Thread receiverT;
 
-    protected BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(1024);
+    protected BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(32);
 
     public Component() {
         //ne = new SignedEvent(new NullEventType().instantiate(), null);
-        bindings = new HashMap<Port, Connector>();
+        bindings = new HashMap<String, Connector>();
     }
 
     public Component(String name) {
@@ -54,7 +55,7 @@ public abstract class Component {
     }
 
     public void send(Event event, Port port) {
-        Connector c = bindings.get(port);
+        Connector c = bindings.get(port.getName());
         if (c != null)
             c.onEvent(event, this);
     }
@@ -91,7 +92,7 @@ public abstract class Component {
     }
 
     public void connect(Port p, Connector c) {
-        bindings.put(p, c);
+        bindings.put(p.getName(), c);
     }
 
     private class Receiver implements Runnable {

@@ -10,7 +10,11 @@ public abstract class EventType {
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof EventType) && ((EventType) o).getName().equals(name);
+        if (o instanceof EventType)  {
+            EventType et = (EventType) o;
+            return et.getName().equals(name);
+        }
+        return false;
     }
 
     @Override

@@ -2,7 +2,6 @@ package org.thingml.java;
 
 import org.thingml.java.ext.EventType;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,8 +16,8 @@ public class Port {
     public Port(final PortType type, final String name, final List<EventType> in, final List<EventType> out) {
         this.type = type;
         this.name = name;
-        this.in = Collections.unmodifiableList(in);
-        this.out = Collections.unmodifiableList(out);
+        this.in = in;
+        this.out = out;
     }
 
     @Override
