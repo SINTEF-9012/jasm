@@ -24,7 +24,7 @@ public abstract class Component {
     private Receiver receiver;
     private Thread receiverT;
 
-    protected BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(32);
+    protected BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(64);
 
     public Component() {
         //ne = new SignedEvent(new NullEventType().instantiate(), null);
