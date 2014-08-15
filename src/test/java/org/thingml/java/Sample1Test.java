@@ -18,7 +18,7 @@ import java.util.List;
 public class Sample1Test extends TestCase {
 
     CompositeState c;
-    IState s2, s2_r, s1_r2;
+    AtomicState s2, s2_r, s1_r2;
 
     public void test() {
         final Test1Component cpt = new Test1Component("test1");
@@ -29,16 +29,16 @@ public class Sample1Test extends TestCase {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        assertEquals(c, cpt.behavior.getRegions().get(0).getCurrent());
-        assertEquals(s2, c.getRegions().get(0).getCurrent());
-        assertEquals(s2_r, c.getRegions().get(1).getCurrent());
-        assertEquals(s1_r2, c.getRegions().get(2).getCurrent());
+        assertEquals(c, cpt.behavior.regions[0].getCurrent());
+        assertEquals(s2, c.regions[0].getCurrent());
+        assertEquals(s2_r, c.regions[1].getCurrent());
+        assertEquals(s1_r2, c.regions[2].getCurrent());
     }
 
     private class Test1Component extends Component {
 
         public Test1Component(String name) {
-            super(name);
+            super(name, 0);
         }
 
         @Override
@@ -48,11 +48,11 @@ public class Sample1Test extends TestCase {
 
 
             //Default region of composite
-            IState s1 = new AtomicState("s1");
+            AtomicState s1 = new AtomicState("s1");
             s2 = new AtomicState("s2");
             Transition t1 = new Transition("t1", nullEventType, null, s1, s2);
 
-            List<IState> states = new ArrayList<IState>();
+            List<AtomicState> states = new ArrayList<AtomicState>();
             states.add(s1);
             states.add(s2);
 
@@ -61,11 +61,11 @@ public class Sample1Test extends TestCase {
 
 
             //region 1
-            IState s1_r = new AtomicState("s1_r");
+            AtomicState s1_r = new AtomicState("s1_r");
             s2_r = new AtomicState("s2_r");
             Transition t1_r = new Transition("t1_r", nullEventType, null, s1_r, s2_r);
 
-            List<IState> states_r = new ArrayList<IState>();
+            List<AtomicState> states_r = new ArrayList<AtomicState>();
             states_r.add(s1_r);
             states_r.add(s2_r);
 
@@ -75,7 +75,7 @@ public class Sample1Test extends TestCase {
 
             //region 2
             s1_r2 = new AtomicState("s1_r2");
-            List<IState> states_r2 = new ArrayList<IState>();
+            List<AtomicState> states_r2 = new ArrayList<AtomicState>();
             states_r2.add(s1_r2);
             Region r2 = new Region("r2", states_r2, s1_r2, Collections.EMPTY_LIST, false);
 
@@ -90,12 +90,12 @@ public class Sample1Test extends TestCase {
 
             //Root composite
             //Default region of root composite
-            IState s1_root = new AtomicState("s1_root");
-            IState s2_root = new AtomicState("s2_root");
+            AtomicState s1_root = new AtomicState("s1_root");
+            AtomicState s2_root = new AtomicState("s2_root");
             Transition t1_root = new Transition("t1_root", nullEventType, null, s1_root, s2_root);
             Transition t2_root = new Transition("t2_root", nullEventType, null, s2_root, c);
 
-            List<IState> states_root = new ArrayList<IState>();
+            List<AtomicState> states_root = new ArrayList<AtomicState>();
             states_root.add(s1_root);
             states_root.add(s2_root);
             states_root.add(c);

@@ -4,7 +4,7 @@ import org.thingml.java.ext.Event;
 
 import java.util.logging.Logger;
 
-public class AtomicState implements IState {
+public class AtomicState {
 
     protected final String name;
 
@@ -22,7 +22,7 @@ public class AtomicState implements IState {
     public void onExit() {
     }//by default, do nothing
 
-    protected IState handle(Event e, Port p, HandlerHelper helper) {
+    protected AtomicState handle(Event e, Port p, HandlerHelper helper) {
         return helper.getActiveHandler(this, e, p).execute(e);
     }
 

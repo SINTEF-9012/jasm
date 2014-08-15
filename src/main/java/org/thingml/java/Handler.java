@@ -8,9 +8,9 @@ public abstract class Handler implements IHandler {
     private final String name;
     private final EventType event;
     private final Port port;
-    private final IState source;
+    private final AtomicState source;
 
-    public Handler(final String name, final EventType event, final Port port, final IState source) {
+    public Handler(final String name, final EventType event, final Port port, final AtomicState source) {
         this.name = name;
         this.event = event;
         this.port = port;
@@ -37,7 +37,7 @@ public abstract class Handler implements IHandler {
         return name;
     }
 
-    public IState getSource() {
+    public AtomicState getSource() {
         return source;
     }
 

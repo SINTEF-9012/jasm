@@ -1,7 +1,5 @@
 package org.thingml.java;
 
-import org.thingml.java.ext.Event;
-
 /**
  * Created by bmori on 29.04.2014.
  */

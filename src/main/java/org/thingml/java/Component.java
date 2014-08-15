@@ -3,11 +3,8 @@ package org.thingml.java;
 import org.thingml.java.ext.Event;
 import org.thingml.java.ext.NullEventType;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.SynchronousQueue;
 
 /**
  * Created by bmori on 29.04.2014.
@@ -15,7 +12,7 @@ import java.util.concurrent.SynchronousQueue;
 public abstract class Component {
 
     protected CompositeState behavior;
-    private final Map<String, Connector> bindings;
+    private Connector[] bindings;
     private String name;
 
     //private final SignedEvent ne;
@@ -26,13 +23,13 @@ public abstract class Component {
 
     protected BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(64);
 
-    public Component() {
+    public Component(int ports) {
         //ne = new SignedEvent(new NullEventType().instantiate(), null);
-        bindings = new HashMap<String, Connector>();
+        bindings = new Connector[ports];
     }
 
-    public Component(String name) {
-        this();
+    public Component(String name, int ports) {
+        this(ports);
         this.name = name;
     }
 
@@ -55,7 +52,7 @@ public abstract class Component {
     }
 
     public void send(Event event, Port port) {
-        Connector c = bindings.get(port.getName());
+        Connector c = bindings[port.ID];
         if (c != null) {
             //c.onEvent(event, this);
             if (c.client == this)
@@ -97,7 +94,7 @@ public abstract class Component {
     }
 
     public void connect(Port p, Connector c) {
-        bindings.put(p.getName(), c);
+        bindings[p.ID] = c;
     }
 
     private class Receiver implements Runnable {

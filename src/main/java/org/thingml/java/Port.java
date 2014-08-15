@@ -12,14 +12,14 @@ public class Port {
     final PortType type;
     final String name;
     final List<EventType> in, out;
-    //final int ID;
+    final int ID;
 
-    public Port(final PortType type, final String name, final List<EventType> in, final List<EventType> out/*, final int ID*/) {
+    public Port(final PortType type, final String name, final List<EventType> in, final List<EventType> out, final int ID) {
         this.type = type;
         this.name = name;
         this.in = in;
         this.out = out;
-        //this.ID = ID;
+        this.ID = ID;
     }
 
     @Override

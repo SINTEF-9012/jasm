@@ -13,26 +13,29 @@ import java.util.List;
  */
 public class CompositeState extends AtomicState {
 
-    protected final List<Region> regions;
-    private final int size;
+    protected final Region[] regions;
 
-    public CompositeState(final String name, final List<IState> states, final IState initial, final List<Handler> transitions) {
+    public CompositeState(final String name, final List<AtomicState> states, final AtomicState initial, final List<Handler> transitions) {
         this(name, states, initial, transitions, Collections.EMPTY_LIST, false);
     }
 
-    public CompositeState(final String name, final List<IState> states, final IState initial, final List<Handler> transitions, final List<Region> regions, final boolean keepHistory) {
+    public CompositeState(final String name, final List<AtomicState> states, final AtomicState initial, final List<Handler> transitions, final List<Region> regions, final boolean keepHistory) {
         super(name);
         Region r = new Region("default", states, initial, transitions, keepHistory);
         List<Region> reg = new ArrayList<Region>(regions);
         reg.add(0, r);//we add the default region first
-        this.regions = reg;
-        this.size = this.regions.size();
+        this.regions = new Region[reg.size()];
+        int i = 0;
+        for(Region re : reg) {
+            this.regions[i] = re;
+            i++;
+        }
     }
 
     public boolean dispatch(final Event e, final Port p) {
         boolean consumed = false;
-        for(int i = 0; i<size; i++) {
-            consumed = consumed | regions.get(i).handle(e, p);
+        for(int i = 0; i<regions.length; i++) {
+            consumed = consumed | regions[i].handle(e, p);
         }
         /*for (Region r : regions) {
             consumed = consumed | r.handle(e, p);//bitwise OR, and we need to execute r.handle no matter how
@@ -58,7 +61,7 @@ public class CompositeState extends AtomicState {
         super.onExit();
     }
 
-    protected IState handle(Event e, Port p, HandlerHelper helper) {
+    protected AtomicState handle(Event e, Port p, HandlerHelper helper) {
         if (!dispatch(e, p)) {//if not, the composite can (try to) consume it
             return super.handle(e, p, helper);
         } else {
@@ -66,7 +69,4 @@ public class CompositeState extends AtomicState {
         }
     }
 
-    public List<Region> getRegions() {
-        return regions;
-    }
 }

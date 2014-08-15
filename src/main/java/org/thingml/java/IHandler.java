@@ -6,6 +6,6 @@ interface IHandler {
 
     boolean check(final Event e, final Port p);
 
-    IState execute(final Event e);
+    AtomicState execute(final Event e);
 
 }

@@ -2,7 +2,6 @@ package org.thingml.java;
 
 import org.thingml.java.ext.Event;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -12,19 +11,19 @@ import java.util.logging.Logger;
 public final class Region /*implements IState*/ {
 
     protected final String name;
-    protected final IState initial;
+    protected final AtomicState initial;
     protected final boolean keepHistory;
-    protected final List<IState> states;
+    protected final List<AtomicState> states;
     protected final List<Handler> transitions;
 
-    protected IState current;
+    protected AtomicState current;
     protected final HandlerHelper helper;
 
     protected final Logger log = Logger.getLogger(Region.class.getName());
 
     //private final NullEventType net = new NullEventType();
 
-    public Region(final String name, final List<IState> states, final IState initial, final List<Handler> transitions, final boolean keepHistory) {
+    public Region(final String name, final List<AtomicState> states, final AtomicState initial, final List<Handler> transitions, final boolean keepHistory) {
         this.name = name;
         this.initial = initial;
         this.keepHistory = keepHistory;
@@ -36,7 +35,7 @@ public final class Region /*implements IState*/ {
     }
 
     public boolean handle(final Event e, final Port p) {
-        final IState next = ((AtomicState) current).handle(e, p, helper);
+        final AtomicState next = current.handle(e, p, helper);
         if (next != null) {
             current = next;
             return true;
@@ -63,7 +62,7 @@ public final class Region /*implements IState*/ {
         return "Region " + name;
     }
 
-    public IState getCurrent() {
+    public AtomicState getCurrent() {
         return current;
     }
 }

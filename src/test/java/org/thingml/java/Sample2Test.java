@@ -24,14 +24,14 @@ public class Sample2Test extends TestCase {
         final HelloEventType helloEventType = new HelloEventType();
 
         //Default region of composite
-        IState s1 = new AtomicState("s1");
-        IState s2 = new AtomicState("s2");
-        IState s3 = new AtomicState("s3");
+        AtomicState s1 = new AtomicState("s1");
+        AtomicState s2 = new AtomicState("s2");
+        AtomicState s3 = new AtomicState("s3");
         Transition t1 = new Transition("t1", helloEventType, null, s1, s2);
         Transition t2 = new Transition("t2", helloEventType, null, s2, s3);
 
 
-        List<IState> states = new ArrayList<IState>();
+        List<AtomicState> states = new ArrayList<AtomicState>();
         states.add(s1);
         states.add(s2);
         states.add(s3);
@@ -45,10 +45,10 @@ public class Sample2Test extends TestCase {
 
         //Root composite
         //Default region of root composite
-        IState s4 = new AtomicState("s4");
+        AtomicState s4 = new AtomicState("s4");
         Transition t1_root = new Transition("t1_root", helloEventType, null, c, s4);
 
-        List<IState> states_root = new ArrayList<IState>();
+        List<AtomicState> states_root = new ArrayList<AtomicState>();
         states_root.add(c);
         states_root.add(s4);
 
@@ -58,15 +58,15 @@ public class Sample2Test extends TestCase {
         CompositeState root = new CompositeState("root", states_root, c, transitions_root, Collections.EMPTY_LIST, false);
 
         root.onEntry();//c.onEntry, s1.onEntry
-        assertEquals(c, root.getRegions().get(0).getCurrent());
-        assertEquals(s1, c.getRegions().get(0).getCurrent());
+        assertEquals(c, root.regions[0].getCurrent());
+        assertEquals(s1, c.regions[0].getCurrent());
         root.dispatch(helloEventType.instantiate(null, "world"), null);//s1 --> s2 (not c-->s4)
-        assertEquals(c, root.getRegions().get(0).getCurrent());
-        assertEquals(s2, c.getRegions().get(0).getCurrent());
+        assertEquals(c, root.regions[0].getCurrent());
+        assertEquals(s2, c.regions[0].getCurrent());
         root.dispatch(helloEventType.instantiate(null, "world"), null);//s2 --> s3 (not c-->s4)
-        assertEquals(c, root.getRegions().get(0).getCurrent());
-        assertEquals(s3, c.getRegions().get(0).getCurrent());
+        assertEquals(c, root.regions[0].getCurrent());
+        assertEquals(s3, c.regions[0].getCurrent());
         root.dispatch(helloEventType.instantiate(null, "world"), null);//c --> s4
-        assertEquals(s4, root.getRegions().get(0).getCurrent());
+        assertEquals(s4, root.regions[0].getCurrent());
     }
 }

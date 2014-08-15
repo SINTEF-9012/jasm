@@ -5,21 +5,21 @@ import org.thingml.java.ext.EventType;
 
 public class Transition extends Handler {
 
-    private final IState target;
+    private final AtomicState target;
 
-    public Transition(final String name, final EventType event, final Port port, final IState source, final IState target) {
+    public Transition(final String name, final EventType event, final Port port, final AtomicState source, final AtomicState target) {
         super(name, event, port, source);
         this.target = target;
     }
 
-    public IState execute(final Event e) {
+    public AtomicState execute(final Event e) {
         getSource().onExit();
         doExecute(e);
         target.onEntry();
         return target;
     }
 
-    public IState getTarget() {
+    public AtomicState getTarget() {
         return target;
     }
 

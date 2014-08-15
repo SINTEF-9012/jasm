@@ -25,7 +25,7 @@ public class HelloWorld extends Component {
     private Port p1;
 
     public HelloWorld(String name) {
-        super(name);
+        super(name, 1);
     }
 
     public Component buildBehavior() {
@@ -34,11 +34,11 @@ public class HelloWorld extends Component {
         //Initialize ports
         List<EventType> in = new ArrayList<EventType>();
         in.add(helloEventType);
-        p1 = new Port(PortType.PROVIDED, "hello", in, Collections.EMPTY_LIST);
+        p1 = new Port(PortType.PROVIDED, "hello", in, Collections.EMPTY_LIST,0);
 
         //Default region of composite
-        IState s1 = new AtomicState("start");
-        IState s2 = new AtomicState("hello");
+        AtomicState s1 = new AtomicState("start");
+        AtomicState s2 = new AtomicState("hello");
         Handler t1 = new InternalTransition("sayHello", helloEventType, p1, s1) {
             @Override
             protected void doExecute(Event e) {
@@ -48,7 +48,7 @@ public class HelloWorld extends Component {
         };
         //Transition t1 = new Transition("sayHello", new HelloHandlerAction(), helloEventType, p1, s1, s2);
 
-        List<IState> states = new ArrayList<IState>();
+        List<AtomicState> states = new ArrayList<AtomicState>();
         states.add(s1);
         states.add(s2);
 

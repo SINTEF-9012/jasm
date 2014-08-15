@@ -23,7 +23,7 @@ public class HandlerHelper {
         }
 
         @Override
-        public IState execute(Event e) {
+        public AtomicState execute(Event e) {
             return null;
         }
     };
@@ -32,11 +32,10 @@ public class HandlerHelper {
 
     }
 
-    public HandlerHelper init(final List<IState> states, final List<Handler> transitions) {
+    public HandlerHelper init(final List<AtomicState> states, final List<Handler> transitions) {
         int index = 0;
         handlers = new IHandler[states.size()][];
-        for (IState is : states) {
-            AtomicState s = (AtomicState) is;
+        for (AtomicState s : states) {
             s.ID = index;
             index++;
             int indexT = 0;
@@ -57,7 +56,7 @@ public class HandlerHelper {
         return this;
     }
 
-    public IHandler getActiveHandler(final IState current, final Event e, final Port port) {
+    public IHandler getActiveHandler(final AtomicState current, final Event e, final Port port) {
         for (IHandler h : handlers[current.getID()]) {
             if (h.check(e, port)) {
                 return h;
