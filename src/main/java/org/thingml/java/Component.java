@@ -56,8 +56,13 @@ public abstract class Component {
 
     public void send(Event event, Port port) {
         Connector c = bindings.get(port.getName());
-        if (c != null)
-            c.onEvent(event, this);
+        if (c != null) {
+            //c.onEvent(event, this);
+            if (c.client == this)
+                c.server.receive(event, c.provided);
+            else
+                c.client.receive(event, c.required);
+        }
     }
 
     public void receive(Event event, final Port p) {

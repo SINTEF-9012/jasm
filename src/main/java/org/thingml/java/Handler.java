@@ -18,23 +18,20 @@ public abstract class Handler implements IHandler {
     }
 
     public boolean check(final Event e, final Port p) {
-        return ((p == null) || p.equals(port)) && (e.getType().equals(event)) && doCheck(e, p);
+        return (p == port) && (e.getType().equals(event)) && doCheck(e);
     }
 
     /**
      * Should be overriden to perform more detailed checks on the event (guard)
      *
      * @param e
-     * @param p
      * @return
      */
-    protected boolean doCheck(final Event e, final Port p) {
+    protected boolean doCheck(final Event e) {
         return true;
     }
 
-    protected void doExecute(final Event e) {
-
-    }
+    protected void doExecute(final Event e) {}
 
     public String getName() {
         return name;
@@ -47,5 +44,7 @@ public abstract class Handler implements IHandler {
     public EventType getEvent() {
         return event;
     }
+
+    public Port getPort() {return port;}
 
 }

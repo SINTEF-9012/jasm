@@ -24,7 +24,7 @@ public class Connector {
         server.connect(provided, this);
     }
 
-    public void onEvent(Event e, Component source) {
+    /*public void onEvent(Event e, Component source) {
         if (client.equals(source))
             forward(e, provided, server);
         else
@@ -35,6 +35,6 @@ public class Connector {
         //if (c.canReceive(e, p)) {
         c.receive(e, p);
         //}
-    }
+    }*/
 
 }
