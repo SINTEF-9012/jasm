@@ -10,8 +10,6 @@ public class AtomicState {
 
     public int ID;
 
-    private final Logger log = Logger.getLogger(AtomicState.class.getName());
-
     public AtomicState(final String name) {
         this.name = name;
     }
