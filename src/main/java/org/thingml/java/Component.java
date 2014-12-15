@@ -3,6 +3,7 @@ package org.thingml.java;
 import org.thingml.java.ext.Event;
 import org.thingml.java.ext.NullEventType;
 
+import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -95,8 +96,13 @@ public abstract class Component {
         }
     }
 
-    public void connect(Port p, Connector... c) {
-        bindings[p.ID] = c;
+    public void connect(Port p, Connector c) {
+        if (bindings[p.ID] == null) {
+            bindings[p.ID] = new Connector[0];
+        }
+        int newLength = bindings[p.ID].length + 1;
+        bindings[p.ID] = Arrays.copyOf(bindings[p.ID], newLength);
+        bindings[p.ID][newLength-1] = c;
     }
 
     private class Receiver implements Runnable {
