@@ -3,7 +3,6 @@ package org.thingml.java;
 import org.thingml.java.ext.Event;
 import org.thingml.java.ext.NullEventType;
 
-import java.net.CookieHandler;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
