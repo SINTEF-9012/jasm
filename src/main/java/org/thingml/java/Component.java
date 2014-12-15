@@ -3,6 +3,7 @@ package org.thingml.java;
 import org.thingml.java.ext.Event;
 import org.thingml.java.ext.NullEventType;
 
+import java.net.CookieHandler;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -12,7 +13,7 @@ import java.util.concurrent.BlockingQueue;
 public abstract class Component {
 
     protected CompositeState behavior;
-    private Connector[] bindings;
+    private Connector[][] bindings;
     private String name;
 
     //private final SignedEvent ne;
@@ -25,7 +26,7 @@ public abstract class Component {
 
     public Component(int ports) {
         //ne = new SignedEvent(new NullEventType().instantiate(), null);
-        bindings = new Connector[ports];
+        bindings = new Connector[ports][];
     }
 
     public Component(String name, int ports) {
@@ -52,13 +53,15 @@ public abstract class Component {
     }
 
     public void send(Event event, Port port) {
-        Connector c = bindings[port.ID];
-        if (c != null) {
-            //c.onEvent(event, this);
-            if (c.client == this)
-                c.server.receive(event, c.provided);
-            else
-                c.client.receive(event, c.required);
+        Connector[] connectors = bindings[port.ID];
+        if (connectors != null) {
+            for(Connector c : connectors) {
+                //c.onEvent(event, this);
+                if (c.client == this)
+                    c.server.receive(event, c.provided);
+                else
+                    c.client.receive(event, c.required);
+            }
         }
     }
 
@@ -93,7 +96,7 @@ public abstract class Component {
         }
     }
 
-    public void connect(Port p, Connector c) {
+    public void connect(Port p, Connector... c) {
         bindings[p.ID] = c;
     }
 
