@@ -10,22 +10,20 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by bmori on 29.04.2014.
  */
-public abstract class Component {
+public abstract class Component implements Runnable {
+
+    boolean active = true;
 
     protected CompositeState behavior;
     private Connector[][] bindings;
     private String name;
 
-    //private final SignedEvent ne;
     private final Event ne = new NullEventType().instantiate(null);
 
-    private Receiver receiver;
-    private Thread receiverT;
-
+    private Thread thread;
     protected BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(64);
 
     public Component(int ports) {
-        //ne = new SignedEvent(new NullEventType().instantiate(), null);
         bindings = new Connector[ports][];
     }
 
@@ -56,11 +54,19 @@ public abstract class Component {
         Connector[] connectors = bindings[port.ID];
         if (connectors != null) {
             for(Connector c : connectors) {
-                //c.onEvent(event, this);
-                if (c.client == this)
-                    c.server.receive(event, c.provided);
-                else
-                    c.client.receive(event, c.required);
+                if (c.client == this) {
+                    event.setPort(c.provided);
+                    c.server.queue.offer(event);
+                }
+                else {
+                    event.setPort(c.required);
+                    c.client.queue.offer(event);
+                }
+                try {
+                    thread.sleep(0,1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -72,24 +78,19 @@ public abstract class Component {
 
     public void start() {
         //receive(net.instantiate(), null);//it might be an auto-transition to be triggered right away
-        behavior.onEntry();
-        if (receiver == null) {
-            receiver = new Receiver();
-        } else {
-            receiver.active = true;
-        }
-        receiverT = new Thread(receiver);
-        receiverT.start();
+        active = true;
+        thread = new Thread(this);
+        thread.start();
+        if (behavior != null)
+            behavior.onEntry();
     }
 
     public void stop() {
-        if (receiver != null) {
-            receiver.active = false;
-            try {
-                receiverT.join(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        active = false;
+        try {
+            thread.join(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         if (behavior != null) {
             behavior.onExit();
@@ -105,25 +106,30 @@ public abstract class Component {
         bindings[p.ID][newLength-1] = c;
     }
 
-    private class Receiver implements Runnable {
 
-        boolean active = true;
 
         @Override
         public void run() {
-            queue.offer(ne);
+            while (behavior.dispatch(ne, null)) {//run empty transition as much as we can
+                try {
+                    thread.sleep(0,1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             while (active) {
                 try {
+
                     final Event e = queue.take();//should block if queue is empty, waiting for a message
                     behavior.dispatch(e, e.getPort());
-                    while (behavior.dispatch(ne, null)) {
-                        //receiverT.sleep(0,1);
+                    while (behavior.dispatch(ne, null)) {//run empty transition as much as we can
+                        thread.sleep(0,1);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }
-    }
+
 
 }
