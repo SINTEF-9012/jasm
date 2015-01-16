@@ -78,6 +78,7 @@ public abstract class Component implements Runnable {
 
     public void start() {
         //receive(net.instantiate(), null);//it might be an auto-transition to be triggered right away
+        queue = new java.util.concurrent.ArrayBlockingQueue<Event>(64);
         active = true;
         thread = new Thread(this);
         thread.start();
