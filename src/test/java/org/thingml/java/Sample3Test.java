@@ -22,7 +22,7 @@ public class Sample3Test extends TestCase {
 
     public void test() {
         final Test1Component cpt = new Test1Component("test1");
-        cpt.buildBehavior().start();
+        cpt.buildBehavior().init().start();
         //cpt.receive(new NullEventType().instantiate(), null);
         try {
             Thread.currentThread().sleep(1000);
@@ -38,7 +38,7 @@ public class Sample3Test extends TestCase {
             e.printStackTrace();
         }
 
-        cpt.start();
+        cpt.init().start();
         //cpt.receive(new NullEventType().instantiate(), null);
         try {
             Thread.currentThread().sleep(1000);

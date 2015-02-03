@@ -21,7 +21,7 @@ public abstract class Component implements Runnable {
     private final Event ne = new NullEventType().instantiate(null);
 
     private Thread thread;
-    protected BlockingQueue<Event> queue = new ArrayBlockingQueue<Event>(64);
+    protected BlockingQueue<Event> queue;// = new ArrayBlockingQueue<Event>(64);
 
     public Component(int ports) {
         bindings = new Connector[ports][];
@@ -76,12 +76,16 @@ public abstract class Component implements Runnable {
         queue.offer(event);
     }
 
-    public void start() {
-        //receive(net.instantiate(), null);//it might be an auto-transition to be triggered right away
+    public Component init() {
         queue = new java.util.concurrent.ArrayBlockingQueue<Event>(64);
         active = true;
         thread = new Thread(this);
         thread.start();
+        return this;
+    }
+
+    public void start() {
+        //receive(net.instantiate(), null);//it might be an auto-transition to be triggered right away
         if (behavior != null)
             behavior.onEntry();
     }
