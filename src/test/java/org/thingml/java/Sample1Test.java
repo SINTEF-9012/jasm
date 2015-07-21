@@ -6,6 +6,7 @@
 package org.thingml.java;
 
 import junit.framework.TestCase;
+import org.thingml.java.ext.Event;
 import org.thingml.java.ext.NullEventType;
 
 import java.util.ArrayList;
@@ -106,6 +107,11 @@ public class Sample1Test extends TestCase {
 
             behavior = new CompositeState("root", states_root, s1_root, transitions_root, Collections.EMPTY_LIST, false);
             return this;
+        }
+
+        @Override
+        public void cepDispatcher(Event event) {
+
         }
     }
 }

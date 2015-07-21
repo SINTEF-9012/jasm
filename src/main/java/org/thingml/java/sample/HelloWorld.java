@@ -59,6 +59,11 @@ public class HelloWorld extends Component {
         return this;
     }
 
+    @Override
+    public void createCepStreams() {
+
+    }
+
     public static void main(String args[]) {
         HelloWorld hw = (HelloWorld) new HelloWorld("HelloWorld").buildBehavior();
         hw.start();
