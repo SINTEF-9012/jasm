@@ -56,13 +56,12 @@ public abstract class Component implements Runnable {
         Connector[] connectors = bindings[port.ID];
         if (connectors != null) {
             for(Connector c : connectors) {
-                if (c.client == this) {
-                    event.setPort(c.provided);
-                    c.server.queue.offer(event);
-                }
-                else {
+                if(port.equals(c.provided)) {
                     event.setPort(c.required);
                     c.client.queue.offer(event);
+                } else {
+                    event.setPort(c.provided);
+                    c.server.queue.offer(event);
                 }
                 try {
                     thread.sleep(0,1);
@@ -141,7 +140,7 @@ public abstract class Component implements Runnable {
 
 
     /** MODIFICATION **/
-    protected abstract void createCepStreams();
+    protected void createCepStreams() {}
     /** END **/
 
 

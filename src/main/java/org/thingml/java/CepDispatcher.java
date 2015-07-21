@@ -33,7 +33,6 @@ public class CepDispatcher {
         List<PublishSubject<Event>> listSubjects = rxRegister.get(event);
         if(listSubjects != null) {
             for (PublishSubject subject : listSubjects) {
-                System.out.println("Cep dispatch message");
                 subject.onNext(event);
             }
         }
