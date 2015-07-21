@@ -4,7 +4,6 @@ import org.thingml.java.ext.Event;
 import org.thingml.java.ext.NullEventType;
 
 import java.util.Arrays;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -54,7 +53,7 @@ public abstract class Component implements Runnable {
         Connector[] connectors = bindings[port.ID];
         if (connectors != null) {
             for(Connector c : connectors) {
-                if (c.client == this) {
+                if(port.equals(c.required)) {
                     event.setPort(c.provided);
                     c.server.queue.offer(event);
                 }
@@ -62,6 +61,7 @@ public abstract class Component implements Runnable {
                     event.setPort(c.required);
                     c.client.queue.offer(event);
                 }
+
                 try {
                     thread.sleep(0,1);
                 } catch (InterruptedException e) {
