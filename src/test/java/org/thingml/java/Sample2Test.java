@@ -7,7 +7,6 @@ package org.thingml.java;
 
 import junit.framework.TestCase;
 import org.thingml.java.ext.NullEventType;
-import org.thingml.java.sample.HelloEventType;
 
 import java.util.ArrayList;
 import java.util.Collections;

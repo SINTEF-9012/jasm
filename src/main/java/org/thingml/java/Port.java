@@ -1,7 +1,9 @@
 package org.thingml.java;
 
+import org.thingml.java.ext.Event;
 import org.thingml.java.ext.EventType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,14 +14,30 @@ public class Port {
     final PortType type;
     final String name;
     final List<EventType> in, out;
-    final int ID;
+    final Component component;
 
-    public Port(final PortType type, final String name, final List<EventType> in, final List<EventType> out, final int ID) {
+    private List<Port> listeners = new ArrayList<Port>();
+
+    public Port(final PortType type, final String name, final List<EventType> in, final List<EventType> out, final Component component) {
         this.type = type;
         this.name = name;
         this.in = in;
         this.out = out;
-        this.ID = ID;
+        this.component = component;
+    }
+
+    public void addListener(Port p) {
+        listeners.add(p);
+    }
+
+    public void removeListener(Port p) {
+        listeners.remove(p);
+    }
+
+    public void send(Event e) {
+        for(Port p : listeners) {
+            p.component.receive(e, p);
+        }
     }
 
     @Override

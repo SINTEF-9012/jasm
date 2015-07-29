@@ -3,8 +3,6 @@ package org.thingml.java;
 import org.thingml.java.ext.Event;
 import org.thingml.java.ext.NullEventType;
 
-import java.util.Arrays;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -15,7 +13,6 @@ public abstract class Component implements Runnable {
     boolean active = true;
 
     protected CompositeState behavior;
-    private Connector[][] bindings;
     private String name;
 
     private final Event ne = new NullEventType().instantiate(null);
@@ -23,12 +20,11 @@ public abstract class Component implements Runnable {
     private Thread thread;
     protected BlockingQueue<Event> queue;// = new ArrayBlockingQueue<Event>(64);
 
-    public Component(int ports) {
-        bindings = new Connector[ports][];
+    public Component() {
+        this("default");
     }
 
-    public Component(String name, int ports) {
-        this(ports);
+    public Component(String name) {
         this.name = name;
     }
 
@@ -41,35 +37,6 @@ public abstract class Component implements Runnable {
     }
 
     abstract public Component buildBehavior();
-
-    boolean canSend(Event event, Port port) {
-        return port.out.contains(event.getType());
-    }
-
-    boolean canReceive(Event event, Port port) {
-        return port.in.contains(event.getType());
-    }
-
-    public void send(Event event, Port port) {
-        Connector[] connectors = bindings[port.ID];
-        if (connectors != null) {
-            for(Connector c : connectors) {
-                if (c.client == this) {
-                    event.setPort(c.provided);
-                    c.server.queue.offer(event);
-                }
-                else {
-                    event.setPort(c.required);
-                    c.client.queue.offer(event);
-                }
-                try {
-                    thread.sleep(0,1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
     public void receive(Event event, final Port p) {
         event.setPort(p);
@@ -102,17 +69,6 @@ public abstract class Component implements Runnable {
         }
     }
 
-    public void connect(Port p, Connector c) {
-        if (bindings[p.ID] == null) {
-            bindings[p.ID] = new Connector[0];
-        }
-        int newLength = bindings[p.ID].length + 1;
-        bindings[p.ID] = Arrays.copyOf(bindings[p.ID], newLength);
-        bindings[p.ID][newLength-1] = c;
-    }
-
-
-
         @Override
         public void run() {
             while (behavior.dispatch(ne, null)) {//run empty transition as much as we can
@@ -124,7 +80,6 @@ public abstract class Component implements Runnable {
             }
             while (active) {
                 try {
-
                     final Event e = queue.take();//should block if queue is empty, waiting for a message
                     behavior.dispatch(e, e.getPort());
                     while (behavior.dispatch(ne, null)) {//run empty transition as much as we can
@@ -135,6 +90,4 @@ public abstract class Component implements Runnable {
                 }
             }
         }
-
-
 }
