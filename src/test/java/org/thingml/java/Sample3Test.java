@@ -57,7 +57,7 @@ public class Sample3Test extends TestCase {
     private class Test1Component extends Component {
 
         public Test1Component(String name) {
-            super(name, 0);
+            super(name);
         }
 
         @Override
