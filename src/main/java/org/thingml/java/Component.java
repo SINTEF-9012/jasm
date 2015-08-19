@@ -4,6 +4,7 @@ import org.thingml.java.ext.Event;
 import org.thingml.java.ext.NullEventType;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedTransferQueue;
 
 /**
  * Created by bmori on 29.04.2014.
@@ -44,7 +45,7 @@ public abstract class Component implements Runnable {
     }
 
     public Component init() {
-        queue = new java.util.concurrent.ArrayBlockingQueue<Event>(64);
+        queue = new LinkedTransferQueue<Event>();
         active = true;
         return this;
     }
@@ -72,18 +73,18 @@ public abstract class Component implements Runnable {
         @Override
         public void run() {
             while (behavior.dispatch(ne, null)) {//run empty transition as much as we can
-                try {
+                /*try {
                     thread.sleep(0,1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
+                }*/
             }
             while (active) {
                 try {
                     final Event e = queue.take();//should block if queue is empty, waiting for a message
                     behavior.dispatch(e, e.getPort());
                     while (behavior.dispatch(ne, null)) {//run empty transition as much as we can
-                        thread.sleep(0,1);
+                        //thread.sleep(0,1);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();

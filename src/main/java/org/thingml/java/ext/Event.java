@@ -24,4 +24,5 @@ public abstract class Event {
         this.port = port;
     }
 
+    abstract public Event clone();
 }
