@@ -41,4 +41,7 @@ public abstract class Event {
         }
         return false;
     }
+
+    abstract public Event clone();
+
 }

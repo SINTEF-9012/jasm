@@ -36,7 +36,8 @@ public class Port {
 
     public void send(Event e) {
         for(Port p : listeners) {
-            p.component.receive(e, p);
+            e.setPort(p);
+            p.component.queue.offer(e.clone());
         }
     }
 

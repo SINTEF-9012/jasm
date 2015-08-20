@@ -21,6 +21,11 @@ public class HelloEventType extends EventType {
             this.who = who;
         }
 
+
+        @Override
+        public Event clone() {
+            return instantiate(getPort(), who);
+        }
     }
     }
 
