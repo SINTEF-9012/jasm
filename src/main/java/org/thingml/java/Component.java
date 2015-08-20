@@ -2,7 +2,6 @@ package org.thingml.java;
 
 import org.thingml.java.ext.Event;
 import org.thingml.java.ext.NullEventType;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 
@@ -21,12 +20,15 @@ public abstract class Component implements Runnable {
     private Thread thread;
     protected BlockingQueue<Event> queue;// = new ArrayBlockingQueue<Event>(64);
 
+    protected CepDispatcher cepDispatcher;
+
     public Component() {
         this("default");
     }
 
     public Component(String name) {
         this.name = name;
+        cepDispatcher = new CepDispatcher();
     }
 
     public String getName() {
@@ -83,6 +85,7 @@ public abstract class Component implements Runnable {
                 try {
                     final Event e = queue.take();//should block if queue is empty, waiting for a message
                     behavior.dispatch(e, e.getPort());
+                    cepDispatcher.dispatch(e);
                     while (behavior.dispatch(ne, null)) {//run empty transition as much as we can
                         //thread.sleep(0,1);
                     }
@@ -91,4 +94,6 @@ public abstract class Component implements Runnable {
                 }
             }
         }
+
+    protected void createCepStreams() {}
 }

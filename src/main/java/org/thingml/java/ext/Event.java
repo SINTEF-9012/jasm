@@ -24,5 +24,24 @@ public abstract class Event {
         this.port = port;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 1;
+        hash = hash * 31 + port.hashCode();
+        hash = hash * 31 + type.hashCode();
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Event) {
+            final Event eObj = (Event) obj;
+            return eObj.getPort().equals(this.getPort())
+                    && eObj.getType().equals(this.getType());
+        }
+        return false;
+    }
+
     abstract public Event clone();
+
 }
