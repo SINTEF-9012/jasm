@@ -1,6 +1,7 @@
 package org.thingml.java;
 
 import org.thingml.java.ext.Event;
+import org.thingml.java.ext.EventType;
 import rx.subjects.PublishSubject;
 
 import java.util.ArrayList;
@@ -12,13 +13,13 @@ import java.util.Map;
  * @author ludovic
  */
 public class CepDispatcher {
-    private Map<Event,List<PublishSubject<Event>>> rxRegister;
+    private Map<EventType,List<PublishSubject<Event>>> rxRegister;
 
     public CepDispatcher() {
-        rxRegister = new HashMap<Event, List<PublishSubject<Event>>>();
+        rxRegister = new HashMap<EventType, List<PublishSubject<Event>>>();
     }
 
-    public void addSubs(Event event, PublishSubject subs) {
+    public void addSubs(EventType event, PublishSubject subs) {
         List<PublishSubject<Event>> subjectList = rxRegister.get(event);
         if(subjectList == null) {
             subjectList = new ArrayList<PublishSubject<Event>>();
@@ -30,9 +31,9 @@ public class CepDispatcher {
     }
 
     public void dispatch(Event event) {
-        List<PublishSubject<Event>> listSubjects = rxRegister.get(event);
+        List<PublishSubject<Event>> listSubjects = rxRegister.get(event.getType());
         if(listSubjects != null) {
-            for (PublishSubject subject : listSubjects) {
+            for (PublishSubject subject : rxRegister.get(event.getType())) {
                 subject.onNext(event);
             }
         }
