@@ -1,7 +1,6 @@
 package org.thingml.java;
 
 import org.thingml.java.ext.Event;
-import org.thingml.java.ext.EventType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,16 +12,13 @@ public class Port {
 
     final PortType type;
     final String name;
-    final List<EventType> in, out;
     final Component component;
 
     private List<Port> listeners = new ArrayList<Port>();
 
-    public Port(final PortType type, final String name, final List<EventType> in, final List<EventType> out, final Component component) {
+    public Port(final PortType type, final String name, final Component component) {
         this.type = type;
         this.name = name;
-        this.in = in;
-        this.out = out;
         this.component = component;
     }
 
@@ -45,7 +41,7 @@ public class Port {
     public boolean equals(Object o) {
         if (o instanceof Port) {
             final Port p = (Port) o;
-            return p.name.equals(name) && p.type.equals(type) && p.in.equals(in) && p.out.equals(out);
+            return p.name.equals(name) && p.type.equals(type);
         }
         return false;
 
@@ -55,8 +51,6 @@ public class Port {
     public int hashCode() {
         int result = type.hashCode();
         result = 31 * result + name.hashCode();
-        result = 31 * result + in.hashCode();
-        result = 31 * result + out.hashCode();
         return result;
     }
 

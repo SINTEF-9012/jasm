@@ -37,9 +37,6 @@ public class CompositeState extends AtomicState {
         for(int i = 0; i<regions.length; i++) {
             consumed = consumed | regions[i].handle(e, p);
         }
-        /*for (Region r : regions) {
-            consumed = consumed | r.handle(e, p);//bitwise OR, and we need to execute r.handle no matter how
-        }*/
         return consumed;
     }
 

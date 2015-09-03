@@ -2,8 +2,6 @@ package org.thingml.java;
 
 import org.thingml.java.ext.Event;
 
-import java.util.logging.Logger;
-
 public class AtomicState {
 
     protected final String name;

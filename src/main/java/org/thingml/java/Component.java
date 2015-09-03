@@ -2,6 +2,7 @@ package org.thingml.java;
 
 import org.thingml.java.ext.Event;
 import org.thingml.java.ext.NullEventType;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 
@@ -18,7 +19,7 @@ public abstract class Component implements Runnable {
     private final Event ne = new NullEventType().instantiate(null);
 
     private Thread thread;
-    protected BlockingQueue<Event> queue;// = new ArrayBlockingQueue<Event>(64);
+    protected BlockingQueue<Event> queue;
 
     protected CepDispatcher cepDispatcher;
 
@@ -53,7 +54,6 @@ public abstract class Component implements Runnable {
     }
 
     public void start() {
-        //receive(net.instantiate(), null);//it might be an auto-transition to be triggered right away
         if (behavior != null)
             behavior.onEntry();
         thread = new Thread(this);
@@ -75,11 +75,7 @@ public abstract class Component implements Runnable {
         @Override
         public void run() {
             while (behavior.dispatch(ne, null)) {//run empty transition as much as we can
-                /*try {
-                    thread.sleep(0,1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }*/
+                ;
             }
             while (active) {
                 try {
@@ -87,7 +83,7 @@ public abstract class Component implements Runnable {
                     behavior.dispatch(e, e.getPort());
                     cepDispatcher.dispatch(e);
                     while (behavior.dispatch(ne, null)) {//run empty transition as much as we can
-                        //thread.sleep(0,1);
+                        ;
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
