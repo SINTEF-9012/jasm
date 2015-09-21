@@ -5,13 +5,13 @@ import org.thingml.java.ext.EventType;
 
 public abstract class Handler implements IHandler {
 
-    private final String name;
+    //private final String name;
     private final EventType event;
     private final Port port;
     private final AtomicState source;
 
     public Handler(final String name, final EventType event, final Port port, final AtomicState source) {
-        this.name = name;
+        //this.name = name;
         this.event = event;
         this.port = port;
         this.source = source;
@@ -33,9 +33,9 @@ public abstract class Handler implements IHandler {
 
     protected void doExecute(final Event e) {}
 
-    public String getName() {
+    /*public String getName() {
         return name;
-    }
+    }*/
 
     public AtomicState getSource() {
         return source;
