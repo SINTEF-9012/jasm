@@ -13,7 +13,7 @@ import java.util.Map;
  * @author ludovic
  */
 public class CepDispatcher {
-    private Map<EventType,List<PublishSubject<Event>>> rxRegister;
+    private final Map<EventType,List<PublishSubject<Event>>> rxRegister;
 
     public CepDispatcher() {
         rxRegister = new HashMap<EventType, List<PublishSubject<Event>>>();

@@ -3,6 +3,8 @@ package org.thingml.java;
 import org.thingml.java.ext.Event;
 import org.thingml.java.ext.EventType;
 
+import java.util.Map;
+
 public class HelloEventType extends EventType {
         public HelloEventType() {
             name = "hello";
@@ -26,6 +28,11 @@ public class HelloEventType extends EventType {
         public Event clone() {
             return instantiate(getPort(), who);
         }
+    }
+
+    @Override
+    public Event instantiate(Port port, Map<String, Object> params) {
+        return instantiate(port, (String) params.get("who"));
     }
     }
 

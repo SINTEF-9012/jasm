@@ -43,6 +43,9 @@ public abstract class Component implements Runnable {
     abstract public Component buildBehavior();
 
     public void receive(Event event, final Port p) {
+        if (queue == null) {
+            queue = new LinkedTransferQueue<Event>();
+        }
         event.setPort(p);
         queue.offer(event);
     }
