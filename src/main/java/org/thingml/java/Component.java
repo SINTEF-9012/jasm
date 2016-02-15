@@ -89,7 +89,7 @@ public abstract class Component implements Runnable {
                         ;
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         }
