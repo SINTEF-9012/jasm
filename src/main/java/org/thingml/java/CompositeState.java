@@ -2,9 +2,7 @@ package org.thingml.java;
 
 import org.thingml.java.ext.Event;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Composite are containers for regions
@@ -14,6 +12,7 @@ import java.util.List;
 public class CompositeState extends AtomicState {
 
     protected final Region[] regions;
+    protected final Map<String, Region> sessions;//Dynamic regions
 
     public CompositeState(final String name, final List<AtomicState> states, final AtomicState initial, final List<Handler> transitions) {
         this(name, states, initial, transitions, Collections.EMPTY_LIST, false);
@@ -30,12 +29,16 @@ public class CompositeState extends AtomicState {
             this.regions[i] = re;
             i++;
         }
+        this.sessions = Collections.synchronizedMap(new HashMap<String, Region>());
     }
 
     public boolean dispatch(final Event e, final Port p) {
         boolean consumed = false;
         for(int i = 0; i<regions.length; i++) {
             consumed = consumed | regions[i].handle(e, p);
+        }
+        for(Region session : sessions.values()) {
+            consumed = consumed | session.handle(e, p);
         }
         return consumed;
     }
@@ -64,6 +67,17 @@ public class CompositeState extends AtomicState {
         } else {
             return this;
         }
+    }
+
+    public void addSession(String key, CompositeState c) {
+        final List<AtomicState> states = new ArrayList<AtomicState>();
+        states.add(c);
+        final Region r = new Region(c.name, states, c, new ArrayList<Handler>(), false);
+        sessions.put(key, r);
+    }
+
+    public void removeSession(String key) {
+        sessions.remove(key);
     }
 
 }

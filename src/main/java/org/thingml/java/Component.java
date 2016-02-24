@@ -16,7 +16,7 @@ public abstract class Component implements Runnable {
     protected CompositeState behavior;
     private String name;
 
-    private final Event ne = new NullEventType().instantiate(null);
+    protected final Event ne = new NullEventType().instantiate(null);
 
     private Thread thread;
     protected BlockingQueue<Event> queue;
