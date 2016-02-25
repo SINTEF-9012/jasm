@@ -10,10 +10,10 @@ import java.util.List;
 public final class Region {
 
     protected final String name;
-    protected final AtomicState initial;
+    public final AtomicState initial;
     protected final boolean keepHistory;
 
-    protected AtomicState current;
+    public AtomicState current;
     protected final HandlerHelper helper;
 
     public Region(final String name, final List<AtomicState> states, final AtomicState initial, final List<Handler> transitions, final boolean keepHistory) {

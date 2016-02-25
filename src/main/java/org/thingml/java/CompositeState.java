@@ -11,8 +11,9 @@ import java.util.*;
  */
 public class CompositeState extends AtomicState {
 
-    protected final Region[] regions;
+    public final Region[] regions;
     protected final Map<String, Region> sessions;//Dynamic regions
+    //protected final Map<String, Object> properties;
 
     public CompositeState(final String name, final List<AtomicState> states, final AtomicState initial, final List<Handler> transitions) {
         this(name, states, initial, transitions, Collections.EMPTY_LIST, false);
@@ -30,6 +31,7 @@ public class CompositeState extends AtomicState {
             i++;
         }
         this.sessions = Collections.synchronizedMap(new HashMap<String, Region>());
+        //this.properties = Collections.synchronizedMap(new HashMap<String, Object>());
     }
 
     public boolean dispatch(final Event e, final Port p) {
@@ -69,15 +71,24 @@ public class CompositeState extends AtomicState {
         }
     }
 
-    public void addSession(String key, CompositeState c) {
+    public Region addSession(String key, CompositeState c) {
+        //System.out.println("adding " + key);
         final List<AtomicState> states = new ArrayList<AtomicState>();
         states.add(c);
         final Region r = new Region(c.name, states, c, new ArrayList<Handler>(), false);
         sessions.put(key, r);
+        //System.out.println("#dynamic regions: " + sessions.size());
+        return r;
     }
 
     public void removeSession(String key) {
+        //System.out.println("removing " + key);
         sessions.remove(key);
+        //System.out.println("#dynamic regions: " + sessions.size());
+    }
+
+    public boolean isTerminated(String session) {
+        return sessions.containsKey(session) && sessions.get(session).current instanceof FinalState;
     }
 
 }
