@@ -22,7 +22,7 @@ public class Sample3Test extends TestCase {
 
     public void test() {
         final Test1Component cpt = new Test1Component("test1");
-        cpt.buildBehavior().init().start();
+        cpt.buildBehavior(null, null).init().start();
         //cpt.receive(new NullEventType().instantiate(), null);
         try {
             Thread.currentThread().sleep(1000);
@@ -61,7 +61,7 @@ public class Sample3Test extends TestCase {
         }
 
         @Override
-        public Component buildBehavior() {
+        public Component buildBehavior(String session, Component root) {
             //Event types
             final NullEventType nullEventType = new NullEventType();
 

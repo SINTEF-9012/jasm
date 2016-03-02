@@ -13,6 +13,8 @@ public abstract class Component implements Runnable {
 
     boolean active = true;
 
+    public long forkId = 0;
+
     protected CompositeState behavior;
     private String name;
 
@@ -40,7 +42,7 @@ public abstract class Component implements Runnable {
         this.name = name;
     }
 
-    abstract public Component buildBehavior();
+    abstract public Component buildBehavior(String session, Component root);
 
     public void receive(Event event, final Port p) {
         if (queue == null) {
