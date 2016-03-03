@@ -6,10 +6,7 @@ import org.thingml.java.ext.NullEventType;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.*;
 
 /**
  * Created by bmori on 29.04.2014.
@@ -19,7 +16,7 @@ public abstract class Component implements Runnable {
     boolean active = true;
 
     public long forkId = 0;
-    public ConcurrentMap<Long, Component> forks = new ConcurrentHashMap<Long, Component>();
+    public ConcurrentLinkedQueue<Component> forks = new ConcurrentLinkedQueue<Component>();
     public Component root = null;
 
     protected CompositeState behavior;
@@ -57,7 +54,7 @@ public abstract class Component implements Runnable {
         }
         event.setPort(p);
         queue.offer(event);
-        for (Component child : forks.values()) {
+        for (Component child : forks) {
             Event child_e = event.clone();
             child.receive(child_e, event.getPort());
         }
