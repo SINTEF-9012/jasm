@@ -3,7 +3,12 @@ package org.thingml.java;
 import org.thingml.java.ext.Event;
 import org.thingml.java.ext.NullEventType;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedTransferQueue;
 
 /**
@@ -14,6 +19,7 @@ public abstract class Component implements Runnable {
     boolean active = true;
 
     public long forkId = 0;
+    public ConcurrentMap<Long, Component> forks = new ConcurrentHashMap<Long, Component>();
 
     protected CompositeState behavior;
     private String name;
@@ -50,6 +56,11 @@ public abstract class Component implements Runnable {
         }
         event.setPort(p);
         queue.offer(event);
+            for (Component child : forks.values()) {
+                System.out.println("forwarding to " + child.getName() + "_" + child.forkId);
+                Event child_e = event.clone();
+                child.receive(child_e, child_e.getPort());
+            }
     }
 
     public Component init() {
@@ -85,6 +96,7 @@ public abstract class Component implements Runnable {
             while (active) {
                 try {
                     final Event e = queue.take();//should block if queue is empty, waiting for a message
+                    System.out.println(forkId + " receives " + e + " on port " + e.getPort().getName());
                     behavior.dispatch(e, e.getPort());
                     cepDispatcher.dispatch(e);
                     while (behavior.dispatch(ne, null)) {//run empty transition as much as we can

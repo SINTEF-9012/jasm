@@ -31,6 +31,7 @@ public class CompositeState extends AtomicState {
     }
 
     public boolean dispatch(final Event e, final Port p) {
+        System.out.println("Dispatching " + e.getType().getName() + " to " + regions.length + " region(s)");
         boolean consumed = false;
         for(int i = 0; i<regions.length; i++) {
             consumed = consumed | regions[i].handle(e, p);
