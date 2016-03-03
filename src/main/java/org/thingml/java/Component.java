@@ -20,6 +20,7 @@ public abstract class Component implements Runnable {
 
     public long forkId = 0;
     public ConcurrentMap<Long, Component> forks = new ConcurrentHashMap<Long, Component>();
+    public Component root = null;
 
     protected CompositeState behavior;
     private String name;
@@ -56,11 +57,10 @@ public abstract class Component implements Runnable {
         }
         event.setPort(p);
         queue.offer(event);
-            for (Component child : forks.values()) {
-                System.out.println("forwarding to " + child.getName() + "_" + child.forkId);
-                Event child_e = event.clone();
-                child.receive(child_e, child_e.getPort());
-            }
+        for (Component child : forks.values()) {
+            Event child_e = event.clone();
+            child.receive(child_e, event.getPort());
+        }
     }
 
     public Component init() {
@@ -96,7 +96,6 @@ public abstract class Component implements Runnable {
             while (active) {
                 try {
                     final Event e = queue.take();//should block if queue is empty, waiting for a message
-                    System.out.println(forkId + " receives " + e + " on port " + e.getPort().getName());
                     behavior.dispatch(e, e.getPort());
                     cepDispatcher.dispatch(e);
                     while (behavior.dispatch(ne, null)) {//run empty transition as much as we can
