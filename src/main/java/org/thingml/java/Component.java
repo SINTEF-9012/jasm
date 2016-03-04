@@ -13,21 +13,21 @@ import java.util.concurrent.*;
  */
 public abstract class Component implements Runnable {
 
-    boolean active = true;
+    volatile boolean active = true;
 
     public long forkId = 0;
     public ConcurrentLinkedQueue<Component> forks = new ConcurrentLinkedQueue<Component>();
     public Component root = null;
 
-    protected CompositeState behavior;
+    volatile protected CompositeState behavior;
     private String name;
 
     protected final Event ne = new NullEventType().instantiate(null);
 
     private Thread thread;
-    protected BlockingQueue<Event> queue;
+    volatile protected BlockingQueue<Event> queue;
 
-    protected CepDispatcher cepDispatcher;
+    volatile protected CepDispatcher cepDispatcher;
 
     public Component() {
         this("default");
@@ -49,14 +49,16 @@ public abstract class Component implements Runnable {
     abstract public Component buildBehavior(String session, Component root);
 
     public void receive(Event event, final Port p) {
-        if (queue == null) {
-            queue = new LinkedTransferQueue<Event>();
-        }
-        event.setPort(p);
-        queue.offer(event);
-        for (Component child : forks) {
-            Event child_e = event.clone();
-            child.receive(child_e, event.getPort());
+        if (active) {
+            if (queue == null) {
+                queue = new LinkedTransferQueue<Event>();
+            }
+            event.setPort(p);
+            queue.offer(event);
+            for (Component child : forks) {
+                Event child_e = event.clone();
+                child.receive(child_e, event.getPort());
+            }
         }
     }
 
@@ -74,14 +76,27 @@ public abstract class Component implements Runnable {
     }
 
     public void stop() {
+        for (Component child : forks) {
+           child.stop();
+        }
         active = false;
         try {
-            thread.join(1000);
+            thread.join(250);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         if (behavior != null) {
             behavior.onExit();
+        }
+    }
+
+    public void delete() {
+        for (Component child : forks) {
+            child.delete();
+        }
+        if (root != null) {
+            root.forks.remove(this);
+            root = null;
         }
     }
 
