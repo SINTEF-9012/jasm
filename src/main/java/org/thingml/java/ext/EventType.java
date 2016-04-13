@@ -26,6 +26,24 @@ public abstract class EventType {
         return name.hashCode();
     }
 
-    abstract public Event instantiate(Port port, Map<String, Object> params);
+    public Event instantiate(Port port, Map<String, Object> params) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Event instantiate(Port port, byte[] payload, String serialization) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Event instantiate(Port port, String payload, String serialization) {
+        throw new UnsupportedOperationException();
+    }
+
+    public String toString(Event event, String serialization) {
+        throw new UnsupportedOperationException();
+    }
+
+    public byte[] toBytes(Event event, String serialization) {
+        throw new UnsupportedOperationException();
+    }
 
 }
