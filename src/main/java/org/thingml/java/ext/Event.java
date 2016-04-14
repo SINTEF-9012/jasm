@@ -7,9 +7,8 @@ public abstract class Event {
     private final EventType type;
     private Port port;
 
-    protected Event(final EventType type, final Port port) {
+    protected Event(final EventType type) {
         this.type = type;
-        this.port = port;
     }
 
     public EventType getType() {
@@ -20,8 +19,17 @@ public abstract class Event {
         return port;
     }
 
-    public void setPort(final Port port) {
+    public Event setPort(final Port port) {
         this.port = port;
+        return this;//Not a usual setter, but convenient (fluent interface)
+    }
+
+    public String toString(String serialization) {
+        throw new UnsupportedOperationException();
+    }
+
+    public byte[] toBytes(String serialization) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

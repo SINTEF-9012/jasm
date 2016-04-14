@@ -6,17 +6,32 @@ import java.util.Map;
 
 public abstract class EventType {
 
-    protected String name = "DEFAULT";
+    protected final String name;
+    protected final short code;
+
+    public EventType() {
+        this.name = "DEFAULT";
+        this.code = 0;
+    }
+
+    public EventType(String name, short code) {
+        this.name = name;
+        this.code = code;
+    }
 
     public String getName() {
         return name;
+    }
+
+    public short getCode() {
+        return code;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof EventType)  {
             EventType et = (EventType) o;
-            return et.getName().equals(name);
+            return et.getCode() == code && et.getName().equals(name);
         }
         return false;
     }
@@ -26,23 +41,15 @@ public abstract class EventType {
         return name.hashCode();
     }
 
-    public Event instantiate(Port port, Map<String, Object> params) {
+    public Event instantiate(Map<String, Object> params) {
         throw new UnsupportedOperationException();
     }
 
-    public Event instantiate(Port port, byte[] payload, String serialization) {
+    public Event instantiate(byte[] payload, String serialization) {
         throw new UnsupportedOperationException();
     }
 
-    public Event instantiate(Port port, String payload, String serialization) {
-        throw new UnsupportedOperationException();
-    }
-
-    public String toString(Event event, String serialization) {
-        throw new UnsupportedOperationException();
-    }
-
-    public byte[] toBytes(Event event, String serialization) {
+    public Event instantiate(String payload, String serialization) {
         throw new UnsupportedOperationException();
     }
 

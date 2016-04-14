@@ -4,13 +4,13 @@ import org.thingml.java.Port;
 
 public final class NullEvent extends Event {
 
-    public NullEvent(EventType type, Port port) {
-        super(type, port);
+    public NullEvent(EventType type) {
+        super(type);
     }
 
     @Override
     public Event clone() {
-        return ((NullEventType)getType()).instantiate(getPort());
+        return ((NullEventType)getType()).instantiate();
     }
 
 

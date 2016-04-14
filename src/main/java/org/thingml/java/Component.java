@@ -22,7 +22,7 @@ public abstract class Component implements Runnable {
     volatile protected CompositeState behavior;
     private String name;
 
-    protected final Event ne = new NullEventType().instantiate(null);
+    protected final Event ne = new NullEventType().instantiate();
 
     private Thread thread;
     volatile protected BlockingQueue<Event> queue;

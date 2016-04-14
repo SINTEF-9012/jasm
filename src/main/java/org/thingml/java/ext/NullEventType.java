@@ -7,15 +7,15 @@ import java.util.Map;
 public final class NullEventType extends EventType {
 
     public NullEventType() {
-        name = "NULL";
+        super("NULL", (short)0);
     }
 
-    public Event instantiate(Port port) {
-        return new NullEvent(this, port);
+    public Event instantiate() {
+        return new NullEvent(this);
     }
 
     @Override
-    public Event instantiate(Port port, Map<String, Object> params) {
-        return instantiate(port);
+    public Event instantiate(Map<String, Object> params) {
+        return instantiate();
     }
 }

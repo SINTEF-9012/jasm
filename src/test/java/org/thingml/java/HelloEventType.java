@@ -7,32 +7,32 @@ import java.util.Map;
 
 public class HelloEventType extends EventType {
         public HelloEventType() {
-            name = "hello";
+            super("hello", (short)1);
         }
 
-        public Event instantiate(Port port, String who) {
-            return new HelloEvent(this, port, who);
+        public Event instantiate(String who) {
+            return new HelloEvent(this, who);
         }
 
     private class HelloEvent extends Event {
 
         public final String who;
 
-        protected HelloEvent(EventType type, Port port, String who) {
-            super(type, port);
+        protected HelloEvent(EventType type, String who) {
+            super(type);
             this.who = who;
         }
 
 
         @Override
         public Event clone() {
-            return instantiate(getPort(), who);
+            return instantiate(who);
         }
     }
 
     @Override
-    public Event instantiate(Port port, Map<String, Object> params) {
-        return instantiate(port, (String) params.get("who"));
+    public Event instantiate(Map<String, Object> params) {
+        return instantiate((String) params.get("who"));
     }
     }
 
