@@ -13,7 +13,7 @@ import java.util.concurrent.*;
  */
 public abstract class Component implements Runnable {
 
-    volatile boolean active = true;
+    protected volatile boolean active = true;
 
     public long forkId = 0;
     public ConcurrentLinkedQueue<Component> forks = new ConcurrentLinkedQueue<Component>();
