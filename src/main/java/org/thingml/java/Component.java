@@ -16,7 +16,7 @@ public abstract class Component implements Runnable {
     protected volatile boolean active = true;
 
     public long forkId = 0;
-    public ConcurrentLinkedQueue<Component> forks = new ConcurrentLinkedQueue<Component>();
+    public volatile ConcurrentLinkedQueue<Component> forks = new ConcurrentLinkedQueue<Component>();
     public Component root = null;
 
     volatile protected CompositeState behavior;
@@ -24,7 +24,7 @@ public abstract class Component implements Runnable {
 
     protected final Event ne = new NullEventType().instantiate();
 
-    private Thread thread;
+    volatile private Thread thread;
     volatile protected BlockingQueue<Event> queue;
 
     volatile protected CepDispatcher cepDispatcher;
