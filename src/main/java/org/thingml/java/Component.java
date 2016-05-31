@@ -81,7 +81,9 @@ public abstract class Component implements Runnable {
         }
         active = false;
         try {
-            thread.join(250);
+            if (thread != null) {
+                thread.join(250);
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
