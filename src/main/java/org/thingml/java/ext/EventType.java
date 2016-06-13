@@ -45,12 +45,12 @@ public abstract class EventType {
         throw new UnsupportedOperationException();
     }
 
-    public Event instantiate(byte[] payload, String serialization) {
+    /*public Event instantiate(byte[] payload, String serialization) {
         throw new UnsupportedOperationException();
-    }
+    }*/
 
-    public Event instantiate(String payload, String serialization) {
+    /*public Event instantiate(String payload, String serialization) {
         throw new UnsupportedOperationException();
-    }
+    }*/
 
 }
