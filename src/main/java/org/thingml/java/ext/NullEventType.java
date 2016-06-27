@@ -10,8 +10,12 @@ public final class NullEventType extends EventType {
         super("NULL", (short)0);
     }
 
+    private static Event instance;
+
     public Event instantiate() {
-        return new NullEvent(this);
+        if (instance == null)
+            instance = new NullEvent(this);
+        return instance;
     }
 
     @Override

@@ -28,10 +28,6 @@ public abstract class Event {
         throw new UnsupportedOperationException();
     }
 
-    public byte[] toBytes(String serialization) {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     public int hashCode() {
         int hash = 1;

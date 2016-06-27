@@ -44,13 +44,4 @@ public abstract class EventType {
     public Event instantiate(Map<String, Object> params) {
         throw new UnsupportedOperationException();
     }
-
-    /*public Event instantiate(byte[] payload, String serialization) {
-        throw new UnsupportedOperationException();
-    }*/
-
-    /*public Event instantiate(String payload, String serialization) {
-        throw new UnsupportedOperationException();
-    }*/
-
 }
