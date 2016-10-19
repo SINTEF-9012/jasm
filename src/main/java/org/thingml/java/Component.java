@@ -45,7 +45,7 @@ public abstract class Component implements Runnable {
     abstract public Component buildBehavior(String session, Component root);
 
     public void receive(final Event event, final Port p) {
-        if (active) {
+        if (active.get()) {
             event.setPort(p);
             queue.offer(event);
             if (root == null && active.get()) {
