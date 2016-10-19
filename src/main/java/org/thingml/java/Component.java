@@ -5,13 +5,14 @@ import org.thingml.java.ext.NullEventType;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by bmori on 29.04.2014.
  */
 public abstract class Component implements Runnable {
     private String name;
-    protected volatile boolean active = true;
+    protected AtomicBoolean active = new AtomicBoolean(true);
 
     public volatile long forkId = 0;
     public BlockingQueue<Component> forks;
@@ -47,7 +48,7 @@ public abstract class Component implements Runnable {
         if (active) {
             event.setPort(p);
             queue.offer(event);
-            if (root == null && active) {
+            if (root == null && active.get()) {
                 for (Component child : forks) {
                     final Event child_e = event.clone();
                     child.receive(child_e, p);
@@ -63,7 +64,7 @@ public abstract class Component implements Runnable {
     public Component init(BlockingQueue<Event> queue, BlockingQueue<Component> forks) {
         this.forks = forks;
         this.queue = queue;
-        this.active = true;
+        this.active = new AtomicBoolean(true);
         return this;
     }
 
@@ -101,7 +102,7 @@ public abstract class Component implements Runnable {
                 child.stop();
             }
         }
-        active = false;
+        active.set(false);
 
             try {
                 if (thread != null) {
@@ -138,18 +139,18 @@ public abstract class Component implements Runnable {
 
         @Override
         public void run() {
-            while (active && behavior.dispatch(ne, null)) {//run empty transition as much as we can
+            while (active.get() && behavior.dispatch(ne, null)) {//run empty transition as much as we can
                 ;
             }
             long wait = 1;
-            while (active) {
+            while (active.get()) {
                 try {
                     final Event e = queue.poll(1, TimeUnit.MILLISECONDS);//should block if queue is empty, waiting for a message
                     if (e != null) {
                         behavior.dispatch(e, e.getPort());
-                        if (active)
+                        if (active.get())
                             cepDispatcher.dispatch(e);
-                        while (active && behavior.dispatch(ne, null)) {//run empty transition as much as we can, if still active (we might have reach a final state)
+                        while (active.get() && behavior.dispatch(ne, null)) {//run empty transition as much as we can, if still active (we might have reach a final state)
                             ;
                         }
                         wait = 1;
