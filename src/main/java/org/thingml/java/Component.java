@@ -44,21 +44,22 @@ public abstract class Component implements Runnable {
 
     abstract public Component buildBehavior(String session, Component root);
 
-    public void receive(final Event event, final Port p) {
-        if (active.get()) {
-            event.setPort(p);
-            queue.offer(event);
-            if (root == null && active.get()) {
-                for (Component child : forks) {
-                    final Event child_e = event.clone();
-                    child.receive(child_e, p);
+    public synchronized void receive(final Event event, final Port p) {
+            if (active.get()) {
+                event.setPort(p);
+                queue.offer(event);
+                System.out.println("Component " + name + " pushing " + event.getType().getName());
+                if (root == null && active.get()) {
+                    for (Component child : forks) {
+                        final Event child_e = event.clone();
+                        child.receive(child_e, p);
+                    }
                 }
             }
-        }
     }
 
     public Component init() {
-        return init(new LinkedBlockingDeque<Event>(256), new LinkedBlockingDeque<Component>(1024));
+        return init(new LinkedTransferQueue<Event>(), new LinkedBlockingDeque<Component>(1024));
     }
 
     public Component init(BlockingQueue<Event> queue, BlockingQueue<Component> forks) {
@@ -142,23 +143,15 @@ public abstract class Component implements Runnable {
             while (active.get() && behavior.dispatch(ne, null)) {//run empty transition as much as we can
                 ;
             }
-            long wait = 1;
             while (active.get()) {
                 try {
-                    final Event e = queue.poll(1, TimeUnit.MILLISECONDS);//should block if queue is empty, waiting for a message
-                    if (e != null) {
-                        behavior.dispatch(e, e.getPort());
-                        if (active.get())
-                            cepDispatcher.dispatch(e);
-                        while (active.get() && behavior.dispatch(ne, null)) {//run empty transition as much as we can, if still active (we might have reach a final state)
-                            ;
-                        }
-                        wait = 1;
-                    } else {
-                        wait = Math.min(wait * 4, 128);
-                        Thread.currentThread().sleep(wait);
+                    final Event e = queue.take();//should block if queue is empty, waiting for a message
+                    behavior.dispatch(e, e.getPort());
+                    if (active.get())
+                        cepDispatcher.dispatch(e);
+                    while (active.get() && behavior.dispatch(ne, null)) {//run empty transition as much as we can, if still active (we might have reach a final state)
+                        ;
                     }
-
                 } catch (InterruptedException e) {
                     //e.printStackTrace();
                 }
