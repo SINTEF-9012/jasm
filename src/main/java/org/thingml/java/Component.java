@@ -48,7 +48,6 @@ public abstract class Component implements Runnable {
             if (active.get()) {
                 event.setPort(p);
                 queue.offer(event);
-                System.out.println("Component " + name + " pushing " + event.getType().getName());
                 if (root == null && active.get()) {
                     for (Component child : forks) {
                         final Event child_e = event.clone();
