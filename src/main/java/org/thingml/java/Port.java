@@ -30,9 +30,17 @@ public class Port {
         listeners.remove(p);
     }
 
-    public void send(Event e) {
-        for(Port p : listeners) {
-            p.component.receive(e.clone(), p);
+    public void send(final Event e) {
+        for(final Port p : listeners) {
+            final Event c = e.clone();
+            c.setPort(p);
+            new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    p.component.receive(c);
+                }
+            }.start();
         }
     }
 

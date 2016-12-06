@@ -30,10 +30,10 @@ public class CompositeState extends AtomicState {
         }
     }
 
-    public boolean dispatch(final Event e, final Port p) {
+    public boolean dispatch(final Event e) {
         boolean consumed = false;
         for(int i = 0; i<regions.length; i++) {
-            consumed = consumed | regions[i].handle(e, p);
+            consumed = consumed | regions[i].handle(e);
         }
         return consumed;
     }
@@ -56,9 +56,9 @@ public class CompositeState extends AtomicState {
         super.onExit();
     }
 
-    protected AtomicState handle(Event e, Port p, HandlerHelper helper) {
-        if (!dispatch(e, p)) {//if not, the composite can (try to) consume it
-            return super.handle(e, p, helper);
+    protected AtomicState handle(Event e, HandlerHelper helper) {
+        if (!dispatch(e)) {//if not, the composite can (try to) consume it
+            return super.handle(e, helper);
         } else {
             return this;
         }

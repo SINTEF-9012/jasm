@@ -17,8 +17,8 @@ public abstract class Handler implements IHandler {
         this.source = source;
     }
 
-    public boolean check(final Event e, final Port p) {
-        return (p == port) && (e.getType().equals(event)) && doCheck(e);
+    public boolean check(final Event e) {
+        return (e.getPort() == null && port == null) || ((e.getPort()!=null && e.getPort().equals(port)) && (e.getType().equals(event)) && doCheck(e));
     }
 
     /**
