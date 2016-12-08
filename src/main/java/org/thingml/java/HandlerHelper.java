@@ -18,7 +18,7 @@ public class HandlerHelper {
 
     private IHandler nullHandler = new IHandler() {
         @Override
-        public boolean check(Event e) {
+        public boolean check(Event e, Port p) {
             return true;
         }
 
@@ -56,9 +56,9 @@ public class HandlerHelper {
         return this;
     }
 
-    public IHandler getActiveHandler(final AtomicState current, final Event e) {
+    public IHandler getActiveHandler(final AtomicState current, final Event e, final Port port) {
         for (IHandler h : handlers[current.getID()]) {
-            if (h.check(e)) {
+            if (h.check(e, port)) {
                 return h;
             }
         }

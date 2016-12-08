@@ -18,8 +18,8 @@ public class AtomicState {
     public void onExit() {
     }//by default, do nothing
 
-    protected AtomicState handle(Event e, HandlerHelper helper) {
-        return helper.getActiveHandler(this, e).execute(e);
+    protected AtomicState handle(Event e, Port p, HandlerHelper helper) {
+        return helper.getActiveHandler(this, e, p).execute(e);
     }
 
     public String getName() {

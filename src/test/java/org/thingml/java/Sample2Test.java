@@ -59,13 +59,13 @@ public class Sample2Test extends TestCase {
         root.onEntry();//c.onEntry, s1.onEntry
         assertEquals(c, root.regions[0].getCurrent());
         assertEquals(s1, c.regions[0].getCurrent());
-        root.dispatch(helloEventType.instantiate("world"));//s1 --> s2 (not c-->s4)
+        root.dispatch(helloEventType.instantiate("world"), null);//s1 --> s2 (not c-->s4)
         assertEquals(c, root.regions[0].getCurrent());
         assertEquals(s2, c.regions[0].getCurrent());
-        root.dispatch(helloEventType.instantiate("world"));//s2 --> s3 (not c-->s4)
+        root.dispatch(helloEventType.instantiate("world"), null);//s2 --> s3 (not c-->s4)
         assertEquals(c, root.regions[0].getCurrent());
         assertEquals(s3, c.regions[0].getCurrent());
-        root.dispatch(helloEventType.instantiate("world"));//c --> s4
+        root.dispatch(helloEventType.instantiate("world"), null);//c --> s4
         assertEquals(s4, root.regions[0].getCurrent());
     }
 }

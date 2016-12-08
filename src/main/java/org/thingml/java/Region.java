@@ -24,8 +24,8 @@ public final class Region {
         this.helper = new HandlerHelper().init(states, transitions);
     }
 
-    public boolean handle(final Event e) {
-        final AtomicState next = current.handle(e, helper);
+    public boolean handle(final Event e, final Port p) {
+        final AtomicState next = current.handle(e, p, helper);
         if (next != null) {
             current = next;
             return true;

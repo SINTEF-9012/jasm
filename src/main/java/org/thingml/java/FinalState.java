@@ -16,7 +16,7 @@ public class FinalState extends AtomicState {
     }//, do nothing
 
     @Override
-    protected final AtomicState handle(Event e, HandlerHelper helper) {
+    protected final AtomicState handle(Event e, Port p, HandlerHelper helper) {
         return null;
     }
 }
