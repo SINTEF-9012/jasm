@@ -23,7 +23,6 @@ public abstract class Component implements Runnable {
     protected static final Event ne = new NullEventType().instantiate();
 
     protected CompositeState behavior;
-    protected CepDispatcher cepDispatcher;
 
     public Component() {
         this("default");
@@ -31,7 +30,6 @@ public abstract class Component implements Runnable {
 
     public Component(String name) {
         this.name = name;
-        this.cepDispatcher = new CepDispatcher();
     }
 
     public String getName() {
@@ -129,7 +127,6 @@ public abstract class Component implements Runnable {
             queue.clear();
             queue = null;
         }
-        cepDispatcher = null;
         thread = null;
         if (root != null) {
             root.forks.remove(this);
@@ -146,8 +143,6 @@ public abstract class Component implements Runnable {
                 try {
                     final Event e = queue.take();//should block if queue is empty, waiting for a message
                     behavior.dispatch(e, e.getPort());
-                    if (active.get())
-                        cepDispatcher.dispatch(e);
                     while (active.get() && behavior.dispatch(ne, null)) {//run empty transition as much as we can, if still active (we might have reach a final state)
                         ;
                     }
