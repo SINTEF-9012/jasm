@@ -151,6 +151,4 @@ public abstract class Component implements Runnable {
                 }
             }
         }
-
-    protected void createCepStreams() {}
 }
