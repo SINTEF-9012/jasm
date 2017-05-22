@@ -14,7 +14,6 @@ public abstract class Component implements Runnable {
     private String name;
     protected AtomicBoolean active = new AtomicBoolean(true);
 
-    public volatile long forkId = 0;
     public BlockingQueue<Component> forks;
     public Component root = null;
 
@@ -43,20 +42,17 @@ public abstract class Component implements Runnable {
     abstract public Component buildBehavior(String session, Component root);
 
     public synchronized void receive(final Event event, final Port p) {
-            if (active.get()) {
-                event.setPort(p);
-                queue.offer(event);
-                if (root == null && active.get()) {
-                    for (Component child : forks) {
-                        final Event child_e = event.clone();
-                        child.receive(child_e, p);
-                    }
-                }
+        if (active.get()) {
+            event.setPort(p);
+            queue.offer(event);
+            for (Component child : (forks!=null)?forks:Collections.<Component>emptyList()) {
+                child.receive(event.clone(), p);
             }
+        }
     }
 
     public Component init() {
-        return init(new LinkedTransferQueue<Event>(), new LinkedBlockingDeque<Component>(1024));
+        return init(new LinkedTransferQueue<Event>(), new LinkedTransferQueue<Component>());
     }
 
     public Component init(BlockingQueue<Event> queue, BlockingQueue<Component> forks) {
@@ -67,23 +63,10 @@ public abstract class Component implements Runnable {
     }
 
     public void addSession(Component session) {
-        this.forkId++;
-        session.forkId = this.forkId;
         session.root = this;
-        session.init(new java.util.concurrent.LinkedBlockingQueue < Event > (256), null);
-        try {
-            if (this.forks.offer(session)) {
-                session.start();
-            } else {
-                session.delete ();
-                session = null;
-            }
-        } catch (Exception ex) {
-            System.err.println("Error while starting session: " + ex.getMessage());
-            ex.printStackTrace();
-            session.delete ();
-            session = null;
-        }
+        session.init(new LinkedTransferQueue<Event>(), null);
+        forks.add(session);
+        session.start();
     }
 
     public void start() {
@@ -95,20 +78,17 @@ public abstract class Component implements Runnable {
     }
 
     public void stop() {
-        if (forks != null) {
-            for (Component child : forks) {
-                child.stop();
-            }
+        for (Component child : (forks!=null)?forks:Collections.<Component>emptyList()) {
+            child.stop();
         }
         active.set(false);
-
-            try {
-                if (thread != null) {
-                    thread.join(512);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        try {
+            if (thread != null) {
+                thread.join(512);
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (behavior != null) {
             behavior.onExit();
         }
@@ -141,11 +121,20 @@ public abstract class Component implements Runnable {
             }
             while (active.get()) {
                 try {
-                    final Event e = queue.take();//should block if queue is empty, waiting for a message
+                    Event e = queue.take();//should block if queue is empty, waiting for a message
                     behavior.dispatch(e, e.getPort());
                     while (active.get() && behavior.dispatch(ne, null)) {//run empty transition as much as we can, if still active (we might have reach a final state)
                         ;
                     }
+                     /*   for (Component child : forks) {
+                            Event ee = e.clone();
+                            child.behavior.dispatch(ee, e.getPort());
+                            ee = null;
+                            while (child.active.get() && child.behavior.dispatch(ne, null)) {//run empty transition as much as we can, if still active (we might have reach a final state)
+                                ;
+                            }
+                        }*/
+                    e = null;
                 } catch (InterruptedException e) {
                     //e.printStackTrace();
                 }
