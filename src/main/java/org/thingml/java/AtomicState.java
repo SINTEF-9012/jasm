@@ -34,17 +34,16 @@ public class AtomicState {
 
     protected AtomicState handle(Event e, Port p) throws Exception {
         boolean found = false;
-        AtomicState next = null;
         for(Handler h : transitions) {
             if (!found && h.check.check(e)) {
                 found = true;
                 h.action.execute(e);
-                next = h.target;
+                return h.target; //This prevents the else block to be called... (seems it is some problems)
             } else if (found && h.check.check(e)) {
                 throw new Exception("Non determinism: Event " + e + " can trigger at least two handlers in " + this);
             }
         }
-        return next;
+        return null;
     }
 
     public String toString() {

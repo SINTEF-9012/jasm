@@ -13,7 +13,7 @@ public class Handler {
     AtomicState source;
     AtomicState target;
     HandlerAction action = (Event event)->{};
-    HandlerCheck check = (Event event)->true;
+    HandlerCheck check = (Event event)->{return this.event.equals(event.getType());};
 
     public Handler() {}
 
@@ -38,8 +38,12 @@ public class Handler {
         return this;
     }
 
-    public Handler guard(HandlerCheck check) {
-        this.check = check;
+    public Handler guard(HandlerCheck c) {
+        this.check = (Event event) -> {
+            if (this.event.equals(event.getType()))
+                return c.check(event);
+            return false;
+        };
         return this;
     }
 
