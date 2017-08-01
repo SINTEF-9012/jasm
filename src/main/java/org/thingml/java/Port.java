@@ -3,6 +3,7 @@ package org.thingml.java;
 import org.thingml.java.ext.Event;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -10,24 +11,31 @@ import java.util.List;
  */
 public class Port {
 
-    final PortType type;
     final String name;
     final Component component;
 
-    private List<Port> listeners = new ArrayList<Port>();
+    private Port[] listeners = new Port[0];
 
-    public Port(final PortType type, final String name, final Component component) {
-        this.type = type;
+    public Port(final String name, final Component component) {
         this.name = name;
         this.component = component;
     }
 
     public void addListener(Port p) {
-        listeners.add(p);
+        listeners = Arrays.copyOf(listeners, listeners.length + 1);
+        listeners[listeners.length-1] = p;
     }
 
     public void removeListener(Port p) {
-        listeners.remove(p);
+        Port[] copy = new Port[listeners.length];
+        int i = 0;
+        for(Port port : listeners) {
+            if (!port.equals(p)) {
+                copy[i] = port;
+                i++;
+            }
+        }
+        listeners = Arrays.copyOfRange(copy, 0, i);
     }
 
     public void send(Event e) {
@@ -40,7 +48,7 @@ public class Port {
     public boolean equals(Object o) {
         if (o instanceof Port) {
             final Port p = (Port) o;
-            return p.name.equals(name) && p.type.equals(type);
+            return p.name.equals(name);
         }
         return false;
 
@@ -48,12 +56,6 @@ public class Port {
 
     @Override
     public int hashCode() {
-        int result = type.hashCode();
-        result = 31 * result + name.hashCode();
-        return result;
-    }
-
-    public String getName() {
-        return name;
+        return name.hashCode();
     }
 }

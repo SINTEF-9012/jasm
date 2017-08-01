@@ -1,26 +1,28 @@
 package org.thingml.java;
 
 import org.thingml.java.ext.Event;
-import org.thingml.java.ext.EventType;
+import org.thingml.java.ext.HandlerAction;
 
 public class Transition extends Handler {
 
-    private final AtomicState target;
 
-    public Transition(final String name, final EventType event, final Port port, final AtomicState source, final AtomicState target) {
-        super(name, event, port, source);
+
+    public Transition() {
+        super();
+    }
+
+    public Transition to(AtomicState target) {
         this.target = target;
+        return this;
     }
 
-    public AtomicState execute(final Event e) {
-        getSource().onExit();
-        doExecute(e);
-        target.onEntry();
-        return target;
-    }
-
-    public AtomicState getTarget() {
-        return target;
+    public Handler action(HandlerAction action) {
+        this.action = (Event event) -> {
+          source.onExit.execute();
+          action.execute(event);
+          target.onEntry.execute();
+        };
+        return this;
     }
 
 }

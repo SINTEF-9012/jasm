@@ -1,50 +1,55 @@
 package org.thingml.java;
 
-import org.thingml.java.ext.Event;
-import org.thingml.java.ext.EventType;
+import org.thingml.java.ext.*;
 
-public abstract class Handler implements IHandler {
+import java.util.Optional;
 
-    //private final String name;
-    private final EventType event;
-    private final Port port;
-    private final AtomicState source;
+public class Handler {
 
-    public Handler(final String name, final EventType event, final Port port, final AtomicState source) {
-        //this.name = name;
+    final static NullEventType nullEventType = new NullEventType();
+
+    EventType event = nullEventType;
+    Port port = null;
+    AtomicState source;
+    AtomicState target;
+    HandlerAction action = (Event event)->{};
+    HandlerCheck check = (Event event)->true;
+
+    public Handler() {}
+
+    public Handler event(EventType event) {
         this.event = event;
+        return this;
+    }
+
+    public Handler port(Port port) {
         this.port = port;
-        this.source = source;
+        return this;
     }
 
-    public boolean check(final Event e, final Port p) {
-        return (p == port) && (e.getType().equals(event)) && doCheck(e);
+    public Handler from(AtomicState state) {
+        this.source = state;
+        this.source.add(this);
+        this.target = state;
+        return this;
     }
 
-    /**
-     * Should be overriden to perform more detailed checks on the event (guard)
-     *
-     * @param e
-     * @return
-     */
-    protected boolean doCheck(final Event e) {
-        return true;
+    public Handler to(AtomicState state) {
+        return this;
     }
 
-    protected void doExecute(final Event e) {}
-
-    /*public String getName() {
-        return name;
-    }*/
-
-    public AtomicState getSource() {
-        return source;
+    public Handler guard(HandlerCheck check) {
+        this.check = check;
+        return this;
     }
 
-    public EventType getEvent() {
-        return event;
+    public Handler action(HandlerAction action) {
+        this.action = action;
+        return this;
     }
 
-    public Port getPort() {return port;}
+    boolean check(final Event e, final Port p) {
+        return (p == port) && (e.getType().equals(event)) && check.check(e);
+    }
 
 }

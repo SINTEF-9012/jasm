@@ -1,7 +1,5 @@
 package org.thingml.java.ext;
 
-import org.thingml.java.Port;
-
 import java.util.Map;
 
 public abstract class EventType {

@@ -12,11 +12,7 @@ public class FinalState extends AtomicState {
     }
 
     @Override
-    public final void onExit() {
-    }//, do nothing
-
-    @Override
-    protected final AtomicState handle(Event e, Port p, HandlerHelper helper) {
+    protected final AtomicState handle(Event e, Port p) {
         return null;
     }
 }
