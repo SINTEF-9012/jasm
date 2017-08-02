@@ -9,6 +9,10 @@ public class Transition extends Handler {
 
     public Transition() {
         super();
+        this.action = (Event event) -> {
+            source.onExit.execute();
+            target.onEntry.execute();
+        };
     }
 
     public Transition to(AtomicState target) {
