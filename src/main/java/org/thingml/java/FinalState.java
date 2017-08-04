@@ -7,12 +7,10 @@ import org.thingml.java.ext.Event;
  */
 public class FinalState extends AtomicState {
 
-    public FinalState(String name) {
+    public FinalState(final String name) {
         super(name);
     }
 
     @Override
-    protected final AtomicState handle(Event e, Port p) {
-        return null;
-    }
+    protected final void handle(final Event e, final Port p, final Status s) {}
 }

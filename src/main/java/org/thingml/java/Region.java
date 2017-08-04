@@ -20,30 +20,26 @@ public final class Region {
         this.name = name;
     }
 
-    public Region add(AtomicState s) {
+    public Region add(final AtomicState s) {
         states = Arrays.copyOf(states, states.length + 1);
         states[states.length-1] = s;
         return this;
     }
 
-    public Region initial(AtomicState s) {
+    public Region initial(final AtomicState s) {
         initial = s;
         current = initial;
         return this;
     }
 
-    public Region keepHistory(boolean history) {
+    public Region keepHistory(final boolean history) {
         keepHistory = history;
         return this;
     }
 
-    public boolean handle(final Event e, final Port p) throws Exception {
-        final AtomicState next = current.handle(e, p);
-        if (next != null) {
-            current = next;
-            return true;
-        }
-        return false;
+    public void handle(final Event e, final Port p, final Status status) {
+        current.handle(e, p, status);
+        current = status.next;
     }
 
     public void onEntry() {

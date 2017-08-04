@@ -24,9 +24,9 @@ public class Sample1Test extends TestCase {
         final Test1Component cpt = new Test1Component("test1");
         cpt.buildBehavior(null, null).init().start();
         try {
-            Thread.currentThread().sleep(1000);
+            Thread.currentThread().sleep(10);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         assertEquals(c, cpt.behavior.regions[0].current);
         assertEquals(s2, c.regions[0].current);
@@ -42,9 +42,6 @@ public class Sample1Test extends TestCase {
 
         @Override
         public Component buildBehavior(String session, Component root) {
-            //Event types
-            final NullEventType nullEventType = new NullEventType();
-
             //Default region of composite
             AtomicState s1 = new AtomicState("s1");
             s2 = new AtomicState("s2");

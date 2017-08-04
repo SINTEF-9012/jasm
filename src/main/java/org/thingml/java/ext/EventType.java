@@ -12,7 +12,7 @@ public abstract class EventType {
         this.code = 0;
     }
 
-    public EventType(String name, short code) {
+    public EventType(final String name, final short code) {
         this.name = name;
         this.code = code;
     }

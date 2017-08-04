@@ -4,8 +4,8 @@ import org.thingml.java.Port;
 
 public abstract class Event {
 
-    private final EventType type;
-    private Port port;
+    final EventType type;
+    Port port;
 
     protected Event(final EventType type) {
         this.type = type;
@@ -31,8 +31,8 @@ public abstract class Event {
     @Override
     public int hashCode() {
         int hash = 1;
-        hash = hash * 31 + port.hashCode();
         hash = hash * 31 + type.hashCode();
+        hash = hash * 31 + (port!=null ? port.hashCode() : 0);
         return hash;
     }
 

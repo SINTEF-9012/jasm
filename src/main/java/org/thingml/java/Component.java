@@ -5,6 +5,7 @@ import org.thingml.java.ext.NullEventType;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -12,7 +13,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by bmori on 29.04.2014.
  */
 public abstract class Component implements Runnable {
+
     private String name;
+    protected CompositeState behavior;
     protected AtomicBoolean active = new AtomicBoolean(true);
 
     public BlockingQueue<Component> forks;
@@ -20,14 +23,11 @@ public abstract class Component implements Runnable {
 
     private Thread thread;
     protected BlockingQueue<Event> queue;
-    protected static final Event ne = new NullEventType().instantiate();
-
-    protected CompositeState behavior;
+    protected Event ne = new NullEventType().instantiate();
 
     public Component() {
         this("default");
     }
-
     public Component(String name) {
         this.name = name;
     }
@@ -36,30 +36,26 @@ public abstract class Component implements Runnable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     abstract public Component buildBehavior(String session, Component root);
 
     public synchronized void receive(final Event event, final Port p) {
-            if (active.get()) {
-                event.setPort(p);
-                queue.offer(event);
-                if (root == null && active.get()) {
-                    forks.parallelStream().forEach((child) -> {
-                        final Event child_e = event.clone();
-                        child.receive(child_e, p);
-                    });
-                }
+        if (active.get()) {
+            event.setPort(p);
+            queue.offer(event);
+            if (root == null && active.get()) {
+                forks.parallelStream().forEach((child) -> {
+                    final Event child_e = event.clone();
+                    child.receive(child_e, p);
+                });
             }
+        }
     }
 
     public Component init() {
-        return init(new LinkedTransferQueue<Event>(), new LinkedBlockingDeque<Component>(1024));
+        return init(new LinkedBlockingQueue<>(), new LinkedBlockingDeque<Component>(1024));
     }
 
-    public Component init(BlockingQueue<Event> queue, BlockingQueue<Component> forks) {
+    public Component init(final BlockingQueue<Event> queue, final BlockingQueue<Component> forks) {
         this.forks = forks;
         this.queue = queue;
         this.active = new AtomicBoolean(true);
@@ -93,20 +89,19 @@ public abstract class Component implements Runnable {
     }
 
     public void stop() {
+        active.set(false);
         if (forks != null) {
-            for (Component child : forks) {
+            for (final Component child : forks) {
                 child.stop();
             }
         }
-        active.set(false);
-
-            try {
-                if (thread != null) {
-                    thread.join(512);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        try {
+            if (thread != null) {
+                thread.join(100);
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (behavior != null) {
             behavior.onExit();
         }
@@ -114,7 +109,7 @@ public abstract class Component implements Runnable {
 
     public void delete() {
         if (forks != null) {
-            for (Component child : forks) {
+            for (final Component child : forks) {
                 child.delete();
             }
             forks.clear();
@@ -132,18 +127,31 @@ public abstract class Component implements Runnable {
         }
     }
 
-        @Override
-        public void run() {
+    @Override
+    public void run() {
+        final Status status = new Status();
         try {
-            while (active.get() && behavior.dispatch(ne, null)) {//run empty transition as much as we can
-                ;
+            behavior.handle(ne, null, status);
+            while (active.get() && status.consumed) {//run empty transition as much as we can
+                status.consumed = false;
+                status.next = null;
+                behavior.handle(ne, null, status);
             }
             while (active.get()) {
                 try {
-                    final Event e = queue.take();//should block if queue is empty, waiting for a message
-                    behavior.dispatch(e, e.getPort());
-                    while (active.get() && behavior.dispatch(ne, null)) {//run empty transition as much as we can, if still active (we might have reach a final state)
-                        ;
+                    final Event e = queue.take();//should wait if queue is empty, waiting for a message
+                    status.consumed = false;
+                    status.next = null;
+                    behavior.handle(e, e.getPort(), status);
+                    if (status.consumed && active.get()) {
+                        status.consumed = false;
+                        status.next = null;
+                        behavior.handle(ne, null, status);
+                        while (active.get() && status.consumed) {//run empty transition as much as we can
+                            status.consumed = false;
+                            status.next = null;
+                            behavior.handle(ne, null, status);
+                        }
                     }
                 } catch (InterruptedException e) {
                     //e.printStackTrace();
@@ -152,7 +160,5 @@ public abstract class Component implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        }
-
-    protected void createCepStreams() {}
+    }
 }

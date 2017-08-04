@@ -13,7 +13,7 @@ public class Handler {
     AtomicState source;
     AtomicState target;
     HandlerAction action = (Event event)->{};
-    HandlerCheck check = (Event event)->{return this.event.equals(event.getType());};
+    HandlerCheck check = (Event event, Port p)->{return ((p==null) ? event.getPort() == null : p.equals(event.getPort())) && this.event.equals(event.getType());};
 
     public Handler() {}
 
@@ -39,9 +39,10 @@ public class Handler {
     }
 
     public Handler guard(HandlerCheck c) {
-        this.check = (Event event) -> {
-            if (this.event.equals(event.getType()))
-                return c.check(event);
+        this.check = (Event event, Port p) -> {
+            if (this.event.equals(event.getType())) {
+                return c.check(event, port);
+            }
             return false;
         };
         return this;
@@ -50,10 +51,6 @@ public class Handler {
     public Handler action(HandlerAction action) {
         this.action = action;
         return this;
-    }
-
-    boolean check(final Event e, final Port p) {
-        return (p == port) && (e.getType().equals(event)) && check.check(e);
     }
 
 }

@@ -21,15 +21,15 @@ public class Port {
         this.component = component;
     }
 
-    public void addListener(Port p) {
+    public void addListener(final Port p) {
         listeners = Arrays.copyOf(listeners, listeners.length + 1);
         listeners[listeners.length-1] = p;
     }
 
-    public void removeListener(Port p) {
+    public void removeListener(final Port p) {
         Port[] copy = new Port[listeners.length];
         int i = 0;
-        for(Port port : listeners) {
+        for(final Port port : listeners) {
             if (!port.equals(p)) {
                 copy[i] = port;
                 i++;
@@ -38,8 +38,10 @@ public class Port {
         listeners = Arrays.copyOfRange(copy, 0, i);
     }
 
-    public void send(Event e) {
-        for(Port p : listeners) {
+    public void send(final Event e) {
+        for(final Port p : listeners) {
+            Event clone = e.clone();
+            clone.setPort(p);
             p.component.receive(e.clone(), p);
         }
     }

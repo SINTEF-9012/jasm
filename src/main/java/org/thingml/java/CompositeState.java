@@ -13,55 +13,48 @@ import java.util.List;
  */
 public class CompositeState extends AtomicState {
 
-    AtomicState states[] = new AtomicState[0];
-    AtomicState initial;
     Region regions[] = new Region[1];
-    boolean keepHistory = false;
 
     public CompositeState(final String name) {
         super(name);
+        Region r = new Region("default");
+        regions[0] = r;
     }
 
-    public CompositeState add(AtomicState s) {
-        states = Arrays.copyOf(states, states.length + 1);
-        states[states.length-1] = s;
+    public CompositeState add(final AtomicState s) {
+        regions[0].add(s);
         return this;
     }
 
-    public CompositeState add(Region r) {
+    public CompositeState add(final Region r) {
         regions = Arrays.copyOf(regions, regions.length + 1);
         regions[regions.length-1] = r;
         return this;
     }
 
-    public CompositeState initial(AtomicState s) {
-        initial = s;
+    public CompositeState initial(final AtomicState s) {
+        regions[0].initial(s);
         return this;
     }
 
-    public CompositeState keepHistory(boolean history) {
-        keepHistory = history;
+    public CompositeState keepHistory(final boolean history) {
+        regions[0].keepHistory(history);
         return this;
     }
 
-    public CompositeState build() {
-        Region r = new Region("default");
-        r.initial(initial).keepHistory(keepHistory);
-        for(AtomicState s : states) {
-            r.add(s);
-        }
-        regions[0] = r;
-        states = null;
-        initial = null;
-        return this;
-    }
-
-    public boolean dispatch(final Event e, final Port p) throws Exception {
+    public void handle(final Event e, final Port p, final Status status) {
         boolean consumed = false;
-        for(Region r : regions) {
-            consumed = consumed | r.handle(e, p);
+        for(final Region r : regions) {
+            r.handle(e, p, status);
+            consumed = consumed | status.consumed;
         }
-        return consumed;
+        if (consumed)
+            status.consumed = true;
+        if (!status.consumed) {//if not, the composite can (try to) consume it
+            super.handle(e, p, status);
+        } else {
+            status.next = this;
+        }
     }
 
     public String toString() {
@@ -80,14 +73,6 @@ public class CompositeState extends AtomicState {
             r.onExit();
         }
         onExit.execute();
-    }
-
-    protected AtomicState handle(Event e, Port p) throws Exception {
-        if (!dispatch(e, p)) {//if not, the composite can (try to) consume it
-            return super.handle(e, p);
-        } else {
-            return this;
-        }
     }
 
 }

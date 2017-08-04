@@ -19,7 +19,6 @@ public class Sample2Test extends TestCase {
 
     public static void test() {
         //Event types
-        final NullEventType nullEventType = new NullEventType();
         final HelloEventType helloEventType = new HelloEventType();
 
         //Default region of composite
@@ -45,16 +44,17 @@ public class Sample2Test extends TestCase {
         root.add(c).add(s4).initial(c).build();
 
         try {
+            final Status status = new Status();
             root.onEntry();//c.onEntry, s1.onEntry
             assertEquals(c, root.regions[0].current);
             assertEquals(s1, c.regions[0].current);
-            root.dispatch(helloEventType.instantiate("world"), null);//s1 --> s2 (not c-->s4)
+            root.handle(helloEventType.instantiate("world"), null, status);//s1 --> s2 (not c-->s4)
             assertEquals(c, root.regions[0].current);
             assertEquals(s2, c.regions[0].current);
-            root.dispatch(helloEventType.instantiate("world"), null);//s2 --> s3 (not c-->s4)
+            root.handle(helloEventType.instantiate("world"), null, status);//s2 --> s3 (not c-->s4)
             assertEquals(c, root.regions[0].current);
             assertEquals(s3, c.regions[0].current);
-            root.dispatch(helloEventType.instantiate("world"), null);//c --> s4
+            root.handle(helloEventType.instantiate("world"), null, status);//c --> s4
             assertEquals(s4, root.regions[0].current);
         } catch (Exception e) {
             e.printStackTrace();

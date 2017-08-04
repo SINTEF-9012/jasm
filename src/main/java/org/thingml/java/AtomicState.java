@@ -16,15 +16,15 @@ public class AtomicState {
         this.name = name;
     }
 
-    public void onEntry(StateAction onEntry) {
+    public void onEntry(final StateAction onEntry) {
         this.onEntry = onEntry;
     }
 
-    public void onExit(StateAction onExit) {
+    public void onExit(final StateAction onExit) {
         this.onExit = onExit;
     }
 
-    AtomicState add(Handler h) {
+    AtomicState add(final Handler h) {
         transitions = Arrays.copyOf(transitions, transitions.length + 1);
         transitions[transitions.length-1] = h;
         return this;
@@ -32,18 +32,17 @@ public class AtomicState {
 
     public AtomicState build() {return this;}
 
-    protected AtomicState handle(Event e, Port p) throws Exception {
-        boolean found = false;
-        for(Handler h : transitions) {
-            if (!found && h.check.check(e)) {
-                found = true;
+    protected void handle(final Event e, final Port p, final Status status) {
+        for(final Handler h : transitions) {
+            if (h.check.check(e, p)) {
                 h.action.execute(e);
-                return h.target; //This prevents the else block to be called... (seems it is some problems)
-            } else if (found && h.check.check(e)) {
-                throw new Exception("Non determinism: Event " + e + " can trigger at least two handlers in " + this);
+                status.consumed = true;
+                status.next = h.target;
+                return;
             }
         }
-        return null;
+        status.consumed = false;
+        status.next = this;
     }
 
     public String toString() {

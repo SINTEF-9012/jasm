@@ -9,18 +9,18 @@ public class Transition extends Handler {
 
     public Transition() {
         super();
-        this.action = (Event event) -> {
+        this.action = (final Event event) -> {
             source.onExit.execute();
             target.onEntry.execute();
         };
     }
 
-    public Transition to(AtomicState target) {
+    public Transition to(final AtomicState target) {
         this.target = target;
         return this;
     }
 
-    public Handler action(HandlerAction action) {
+    public Handler action(final HandlerAction action) {
         this.action = (Event event) -> {
           source.onExit.execute();
           action.execute(event);
