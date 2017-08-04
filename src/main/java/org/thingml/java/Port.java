@@ -60,4 +60,8 @@ public class Port {
     public int hashCode() {
         return name.hashCode();
     }
+
+    public String getName() {
+        return name;
+    }
 }

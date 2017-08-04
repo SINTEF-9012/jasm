@@ -21,6 +21,16 @@ public class CompositeState extends AtomicState {
         regions[0] = r;
     }
 
+    public CompositeState(final String name, boolean isEmpty) {
+        super(name);
+        if (isEmpty) {
+            regions = new Region[0];
+        } else {
+            Region r = new Region("default");
+            regions[0] = r;
+        }
+    }
+
     public CompositeState add(final AtomicState s) {
         regions[0].add(s);
         return this;
