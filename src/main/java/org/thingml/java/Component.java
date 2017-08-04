@@ -80,7 +80,7 @@ public abstract class Component implements Runnable {
 
     public void start() {
         if (behavior != null) {
-            behavior.onEntry();
+            behavior.onEntry.execute();
             thread = new Thread(this);
             thread.start();
         }
@@ -101,7 +101,7 @@ public abstract class Component implements Runnable {
             e.printStackTrace();
         }
         if (behavior != null) {
-            behavior.onExit();
+            behavior.onExit.execute();
         }
     }
 

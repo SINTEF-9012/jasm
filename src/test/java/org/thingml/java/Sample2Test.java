@@ -45,7 +45,7 @@ public class Sample2Test extends TestCase {
 
         try {
             final Status status = new Status();
-            root.onEntry();//c.onEntry, s1.onEntry
+            root.onEntry.execute();//c.onEntry, s1.onEntry
             assertEquals(c, root.regions[0].current);
             assertEquals(s1, c.regions[0].current);
             root.handle(helloEventType.instantiate("world"), status);//s1 --> s2 (not c-->s4)

@@ -1,6 +1,7 @@
 package org.thingml.java;
 
 import org.thingml.java.ext.Event;
+import org.thingml.java.ext.StateAction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +20,16 @@ public class CompositeState extends AtomicState {
         super(name);
         Region r = new Region("default");
         regions[0] = r;
+        this.onEntry = ()->{
+            for (final Region reg : regions) {
+                reg.onEntry();
+            }
+        };
+        this.onExit = ()->{
+            for (final Region reg : regions) {
+                reg.onExit();
+            }
+        };
     }
 
     public CompositeState(final String name, boolean isEmpty) {
@@ -28,6 +39,16 @@ public class CompositeState extends AtomicState {
         } else {
             Region r = new Region("default");
             regions[0] = r;
+            this.onEntry = ()->{
+                for (final Region reg : regions) {
+                    reg.onEntry();
+                }
+            };
+            this.onExit = ()->{
+                for (final Region reg : regions) {
+                    reg.onExit();
+                }
+            };
         }
     }
 
@@ -53,7 +74,6 @@ public class CompositeState extends AtomicState {
     }
 
     public void handle(final Event e, final Status status) {
-        //System.out.println(this + " handling " + e);
         boolean consumed = false;
         for(final Region r : regions) {
             r.handle(e, status);
@@ -72,18 +92,21 @@ public class CompositeState extends AtomicState {
         return "Composite state " + name;
     }
 
-    public void onEntry() {
-        onEntry.execute();
-        for (Region r : regions) {
-            r.onEntry();
-        }
+    public void onEntry(final StateAction onEntry) {
+        this.onEntry = ()->{
+            onEntry.execute();
+            for (final Region r : regions) {
+                r.onEntry();
+            }
+        };
     }
 
-    public void onExit() {
-        for (Region r : regions) {
-            r.onExit();
-        }
-        onExit.execute();
+    public void onExit(final StateAction onExit) {
+        this.onExit = ()->{
+            for (final Region r : regions) {
+                r.onExit();
+            }
+            onExit.execute();
+        };
     }
-
 }
