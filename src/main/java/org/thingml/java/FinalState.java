@@ -12,5 +12,5 @@ public class FinalState extends AtomicState {
     }
 
     @Override
-    protected final void handle(final Event e, final Port p, final Status s) {}
+    protected final void handle(final Event e, final Status s) {}
 }

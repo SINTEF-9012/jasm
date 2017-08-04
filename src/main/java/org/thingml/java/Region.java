@@ -37,8 +37,8 @@ public final class Region {
         return this;
     }
 
-    public void handle(final Event e, final Port p, final Status status) {
-        current.handle(e, p, status);
+    public void handle(final Event e, final Status status) {
+        current.handle(e, status);
         current = status.next;
     }
 

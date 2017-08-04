@@ -52,16 +52,17 @@ public class CompositeState extends AtomicState {
         return this;
     }
 
-    public void handle(final Event e, final Port p, final Status status) {
+    public void handle(final Event e, final Status status) {
+        //System.out.println(this + " handling " + e);
         boolean consumed = false;
         for(final Region r : regions) {
-            r.handle(e, p, status);
+            r.handle(e, status);
             consumed = consumed | status.consumed;
         }
         if (consumed)
             status.consumed = true;
         if (!status.consumed) {//if not, the composite can (try to) consume it
-            super.handle(e, p, status);
+            super.handle(e, status);
         } else {
             status.next = this;
         }

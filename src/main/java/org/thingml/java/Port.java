@@ -42,7 +42,8 @@ public class Port {
         for(final Port p : listeners) {
             Event clone = e.clone();
             clone.setPort(p);
-            p.component.receive(e.clone(), p);
+            //System.out.println(component.getName() + "::" + name + " --(" + e.getType().getName() + ")--> " + p.component.getName() + "::" + p.name);
+            p.component.receive(clone);
         }
     }
 

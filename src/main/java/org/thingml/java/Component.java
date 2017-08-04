@@ -38,14 +38,12 @@ public abstract class Component implements Runnable {
 
     abstract public Component buildBehavior(String session, Component root);
 
-    public synchronized void receive(final Event event, final Port p) {
+    public synchronized void receive(final Event event) {
         if (active.get()) {
-            event.setPort(p);
             queue.offer(event);
             if (root == null && active.get()) {
                 forks.parallelStream().forEach((child) -> {
-                    final Event child_e = event.clone();
-                    child.receive(child_e, p);
+                    child.receive(event.clone());
                 });
             }
         }
@@ -131,26 +129,27 @@ public abstract class Component implements Runnable {
     public void run() {
         final Status status = new Status();
         try {
-            behavior.handle(ne, null, status);
+            behavior.handle(ne, status);
             while (active.get() && status.consumed) {//run empty transition as much as we can
                 status.consumed = false;
                 status.next = null;
-                behavior.handle(ne, null, status);
+                behavior.handle(ne, status);
             }
             while (active.get()) {
                 try {
                     final Event e = queue.take();//should wait if queue is empty, waiting for a message
+                    //System.out.println(name + " processing event " + e.getType().getName() + " received on port " + e.getPort().getName());
                     status.consumed = false;
                     status.next = null;
-                    behavior.handle(e, e.getPort(), status);
+                    behavior.handle(e, status);
                     if (status.consumed && active.get()) {
                         status.consumed = false;
                         status.next = null;
-                        behavior.handle(ne, null, status);
+                        behavior.handle(ne, status);
                         while (active.get() && status.consumed) {//run empty transition as much as we can
                             status.consumed = false;
                             status.next = null;
-                            behavior.handle(ne, null, status);
+                            behavior.handle(ne, status);
                         }
                     }
                 } catch (InterruptedException e) {

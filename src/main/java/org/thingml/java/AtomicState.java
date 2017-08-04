@@ -32,9 +32,9 @@ public class AtomicState {
 
     public AtomicState build() {return this;}
 
-    protected void handle(final Event e, final Port p, final Status status) {
+    protected void handle(final Event e, final Status status) {
         for(final Handler h : transitions) {
-            if (h.check.check(e, p)) {
+            if (h.check.check(e)) {
                 h.action.execute(e);
                 status.consumed = true;
                 status.next = h.target;

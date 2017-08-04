@@ -48,13 +48,13 @@ public class Sample2Test extends TestCase {
             root.onEntry();//c.onEntry, s1.onEntry
             assertEquals(c, root.regions[0].current);
             assertEquals(s1, c.regions[0].current);
-            root.handle(helloEventType.instantiate("world"), null, status);//s1 --> s2 (not c-->s4)
+            root.handle(helloEventType.instantiate("world"), status);//s1 --> s2 (not c-->s4)
             assertEquals(c, root.regions[0].current);
             assertEquals(s2, c.regions[0].current);
-            root.handle(helloEventType.instantiate("world"), null, status);//s2 --> s3 (not c-->s4)
+            root.handle(helloEventType.instantiate("world"), status);//s2 --> s3 (not c-->s4)
             assertEquals(c, root.regions[0].current);
             assertEquals(s3, c.regions[0].current);
-            root.handle(helloEventType.instantiate("world"), null, status);//c --> s4
+            root.handle(helloEventType.instantiate("world"), status);//c --> s4
             assertEquals(s4, root.regions[0].current);
         } catch (Exception e) {
             e.printStackTrace();

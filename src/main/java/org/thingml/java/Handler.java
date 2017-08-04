@@ -12,37 +12,54 @@ public class Handler {
     Port port = null;
     AtomicState source;
     AtomicState target;
-    HandlerAction action = (Event event)->{};
-    HandlerCheck check = (Event event, Port p)->{return ((p==null) ? event.getPort() == null : p.equals(event.getPort())) && this.event.equals(event.getType());};
+    HandlerAction action = (final Event event)->{};
+    HandlerCheck check = (final Event event)->{
+        //return this.event.equals(event.getType()) && ((event.getPort() != null) ? event.getPort().equals(this.port) : this.port==null);
+        //System.out.println("Handler checking " + event);
+        //System.out.println(this.event + ".equals(" + event.getType() + ")?" + this.event.equals(event.getType()));
+        //System.out.println("event.port = " + event.getPort());
+        //System.out.println("this.port = " + this.port);
+        if (this.event.equals(event.getType()) && ((event.getPort() != null) ? event.getPort().equals(this.port) : this.port==null)) {
+            //System.out.println("OK");
+            return true;
+        } /*else {
+            System.out.println("NOT OK!!!");
+        }*/
+        return false;
+    };
 
     public Handler() {}
 
-    public Handler event(EventType event) {
+    public Handler event(final EventType event) {
         this.event = event;
         return this;
     }
 
-    public Handler port(Port port) {
+    public Handler port(final Port port) {
         this.port = port;
         return this;
     }
 
-    public Handler from(AtomicState state) {
+    public Handler from(final AtomicState state) {
         this.source = state;
         this.source.add(this);
         this.target = state;
         return this;
     }
 
-    public Handler to(AtomicState state) {
+    public Handler to(final AtomicState state) {
         return this;
     }
 
-    public Handler guard(HandlerCheck c) {
-        this.check = (Event event, Port p) -> {
-            if (this.event.equals(event.getType())) {
-                return c.check(event, port);
-            }
+    public Handler guard(final HandlerCheck c) {
+        this.check = (final Event event) -> {
+            //System.out.println("Handler checking " + event);
+            if (this.event.equals(event.getType()) && ((event.getPort() != null) ? event.getPort().equals(this.port) : this.port==null)) {
+                //System.out.println("OK");
+                return c.check(event);
+            } /*else {
+                System.out.println("NOT OK!!!");
+            }*/
             return false;
         };
         return this;
