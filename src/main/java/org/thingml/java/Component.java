@@ -100,9 +100,9 @@ public abstract class Component implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (behavior != null) {
+        /*if (behavior != null) {
             behavior.onExit.execute();
-        }
+        }*/
     }
 
     public void delete() {
