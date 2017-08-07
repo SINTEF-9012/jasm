@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class Component implements Runnable {
 
     private String name;
-    protected CompositeState behavior;
+    protected volatile CompositeState behavior;
     protected AtomicBoolean active = new AtomicBoolean(true);
 
     public BlockingQueue<Component> forks;
@@ -129,7 +129,9 @@ public abstract class Component implements Runnable {
     public void run() {
         final Status status = new Status();
         try {
-            behavior.handle(ne, status);
+            if (active.get()) {
+                behavior.handle(ne, status);
+            }
             while (active.get() && status.consumed) {//run empty transition as much as we can
                 status.consumed = false;
                 status.next = null;
