@@ -43,7 +43,9 @@ public abstract class Component implements Runnable {
             queue.offer(event);
             if (root == null && active.get()) {
                 forks.parallelStream().forEach((child) -> {
-                    child.receive(event.clone());
+                	final Event clone = event.clone();
+                	clone.setPort(event.getPort());
+                	child.receive(clone);
                 });
             }
         }
