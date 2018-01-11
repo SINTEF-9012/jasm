@@ -1,4 +1,4 @@
-package org.thingml.java.ext;
+package no.sintef.jasm.ext;
 
 public final class NullEvent extends Event {
 

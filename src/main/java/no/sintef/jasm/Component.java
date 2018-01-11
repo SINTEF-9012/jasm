@@ -1,16 +1,15 @@
-package org.thingml.java;
+package no.sintef.jasm;
 
-import org.thingml.java.ext.Event;
-import org.thingml.java.ext.NullEventType;
+import no.sintef.jasm.ext.Event;
+import no.sintef.jasm.ext.NullEventType;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by bmori on 29.04.2014.
+ * Lightweight component to encapsulate state machine
  */
 public abstract class Component implements Runnable {
 
@@ -25,19 +24,41 @@ public abstract class Component implements Runnable {
     protected BlockingQueue<Event> queue;
     protected Event ne = new NullEventType().instantiate();
 
+    /**
+     * Default constructor
+     */
     public Component() {
         this("default");
     }
+
+    /**
+     * Construtor
+     * @param name the name for the component
+     */
     public Component(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return the name of this component
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Builds the behavior (i.e. sets the behavior attribute)
+     * @param session to identify the session to build (null for the default session)
+     * @param root to identify the root component when building a session (null for the default behavior)
+     * @return
+     */
     abstract public Component buildBehavior(String session, Component root);
 
+    /**
+     * Allows to send events to this component
+     * @param event the event to be received by this component
+     */
     public synchronized void receive(final Event event) {
         if (active.get()) {
             queue.offer(event);
@@ -51,10 +72,18 @@ public abstract class Component implements Runnable {
         }
     }
 
+    /**
+     * Initilized this component (setup queue, etc)
+     * @return
+     */
     public Component init() {
         return init(new LinkedBlockingQueue<>(), new LinkedBlockingDeque<Component>(1024));
     }
 
+    /**
+     * Initilized this component (setup queue, etc)
+     * @return
+     */
     public Component init(final BlockingQueue<Event> queue, final BlockingQueue<Component> forks) {
         this.forks = forks;
         this.queue = queue;
@@ -62,6 +91,10 @@ public abstract class Component implements Runnable {
         return this;
     }
 
+    /**
+     * Adds a dynamic session to this component
+     * @param session the session to add
+     */
     public void addSession(Component session) {
         session.root = this;
         session.init(new java.util.concurrent.LinkedBlockingQueue < Event > (256), null);
@@ -80,6 +113,9 @@ public abstract class Component implements Runnable {
         }
     }
 
+    /**
+     * Starts the components, which should be ready and start processing events
+     */
     public void start() {
         if (behavior != null) {
             behavior.onEntry.execute();
@@ -88,6 +124,9 @@ public abstract class Component implements Runnable {
         }
     }
 
+    /**
+     * Stops the component
+     */
     public void stop() {
         active.set(false);
         if (forks != null) {
@@ -107,6 +146,9 @@ public abstract class Component implements Runnable {
         }*/
     }
 
+    /**
+     * "delete" the component
+     */
     public void delete() {
         if (forks != null) {
             for (final Component child : forks) {
@@ -127,6 +169,9 @@ public abstract class Component implements Runnable {
         }
     }
 
+    /**
+     * The main logic that dispatches events
+     */
     @Override
     public void run() {
         final Status status = new Status();

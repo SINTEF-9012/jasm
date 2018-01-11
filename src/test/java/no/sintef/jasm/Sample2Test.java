@@ -3,14 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.thingml.java;
+package no.sintef.jasm;
 
 import junit.framework.TestCase;
-import org.thingml.java.ext.NullEventType;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author bmori

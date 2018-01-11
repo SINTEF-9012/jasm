@@ -1,11 +1,9 @@
-package org.thingml.java;
+package no.sintef.jasm;
 
-import org.thingml.java.ext.Event;
-import org.thingml.java.ext.StateAction;
+import no.sintef.jasm.ext.Event;
+import no.sintef.jasm.ext.StateAction;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Composite are containers for regions

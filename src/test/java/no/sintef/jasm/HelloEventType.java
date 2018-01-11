@@ -1,7 +1,7 @@
-package org.thingml.java;
+package no.sintef.jasm;
 
-import org.thingml.java.ext.Event;
-import org.thingml.java.ext.EventType;
+import no.sintef.jasm.ext.Event;
+import no.sintef.jasm.ext.EventType;
 
 import java.util.Map;
 

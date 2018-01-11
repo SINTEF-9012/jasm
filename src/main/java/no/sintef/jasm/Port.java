@@ -1,10 +1,8 @@
-package org.thingml.java;
+package no.sintef.jasm;
 
-import org.thingml.java.ext.Event;
+import no.sintef.jasm.ext.Event;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by bmori on 29.04.2014.

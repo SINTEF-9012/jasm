@@ -1,7 +1,11 @@
-package org.thingml.java.ext;
+package no.sintef.jasm.ext;
 
-import org.thingml.java.Port;
 
+import no.sintef.jasm.Port;
+
+/**
+ * An extension point to define custom events
+ */
 public abstract class Event {
 
     final EventType type;

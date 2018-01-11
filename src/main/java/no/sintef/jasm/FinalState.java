@@ -1,6 +1,6 @@
-package org.thingml.java;
+package no.sintef.jasm;
 
-import org.thingml.java.ext.Event;
+import no.sintef.jasm.ext.Event;
 
 /**
  * Created by bmori on 25.02.2016.

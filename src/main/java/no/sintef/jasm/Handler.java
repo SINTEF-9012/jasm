@@ -1,8 +1,6 @@
-package org.thingml.java;
+package no.sintef.jasm;
 
-import org.thingml.java.ext.*;
-
-import java.util.Optional;
+import no.sintef.jasm.ext.*;
 
 public class Handler {
 

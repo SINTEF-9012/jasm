@@ -1,4 +1,4 @@
-package org.thingml.java;
+package no.sintef.jasm;
 
 public class Status {
     boolean consumed = false;
