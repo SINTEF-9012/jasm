@@ -1,63 +1,39 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.thingml</groupId>
-    <artifactId>org.thingml.jasm</artifactId>
+    <groupId>no.sintef</groupId>
+    <artifactId>jasm</artifactId>
     <packaging>jar</packaging>
     <version>1.1.0-SNAPSHOT</version>
-    <name>ThingML :: Java State Machine</name>
+    <name>Java State Machine</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <scm>
-        <connection>scm:git:git://github.com/brice-morin/jasm.git</connection>
-        <developerConnection>scm:git:git@github.com:brice-morin/jasm.git</developerConnection>
-        <url>https://github.com/brice-morin/jasm.git</url>
+        <connection>scm:git:git://github.com/SINTEF-9012/jasm.git</connection>
+        <developerConnection>scm:git:git@github.com:SINTEF-9012/jasm.git</developerConnection>
+        <url>https://github.com/SINTEF-9012/jasm.git</url>
         <tag>HEAD</tag>
     </scm>
 
-    <repositories>
-
-        <repository>
-            <id>thingml-snapshot</id>
-            <name>thingml-snapshot</name>
-            <url>http://maven.thingml.org/thingml-snapshot/</url>
-        </repository>
-
-        <repository>
-            <id>thingml-release</id>
-            <name>thingml-release</name>
-            <url>http://maven.thingml.org/thingml-release/</url>
-        </repository>
-
-        <repository>
-            <id>thirdparty</id>
-            <name>thingml-snapshot</name>
-            <url>http://maven.thingml.org/thirdparty/</url>
-        </repository>
-
-    </repositories>
-
-
     <dependencies>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>io.reactivex</groupId>
-            <artifactId>rxjava</artifactId>
-            <version>1.1.3</version>
-        </dependency>
-
     </dependencies>
-
 
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
@@ -77,23 +53,6 @@
             </plugin>
         </plugins>
     </build>
-
-
-    <distributionManagement>
-
-        <repository>
-            <id>thingml-release</id>
-            <name>thingml-release</name>
-            <url>http://maven.thingml.org/archiva/repository/thingml-release/</url>
-        </repository>
-
-        <snapshotRepository>
-            <id>thingml-snapshot</id>
-            <name>thingml-snapshot</name>
-            <url>http://maven.thingml.org/archiva/repository/thingml-snapshot/</url>
-        </snapshotRepository>
-
-    </distributionManagement>
 
 
 </project>
