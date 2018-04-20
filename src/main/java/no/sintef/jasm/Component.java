@@ -18,6 +18,7 @@ public abstract class Component implements Runnable {
     protected AtomicBoolean active = new AtomicBoolean(true);
 
     public BlockingQueue<Component> forks;
+    private Object forkLock = new Object();
     public Component root = null;
 
     private Thread thread;
@@ -59,16 +60,16 @@ public abstract class Component implements Runnable {
      * Allows to send events to this component
      * @param event the event to be received by this component
      */
-    public synchronized void receive(final Event event) {
+    public void receive(final Event event) {
         if (active.get()) {
-            synchronized ((root==null)?this:root) {
+            synchronized (forkLock) {
                 queue.offer(event);
                 if (root == null && active.get()) {
-                    forks.parallelStream().forEach((child) -> {
-                        final Event clone = event.clone();
-                        clone.setPort(event.getPort());
-                        child.receive(clone);
-                    });
+                    for (Component child : forks) {
+                      final Event clone = event.clone();
+                      clone.setPort(event.getPort());
+                      child.receive(clone);
+                    }
                 }
             }
         }
@@ -98,9 +99,10 @@ public abstract class Component implements Runnable {
      * @param session the session to add
      */
     public void addSession(Component session) {
+        session.forkLock = forkLock;
         session.root = this;
         session.init(new java.util.concurrent.LinkedBlockingQueue < Event > (256), null);
-        synchronized ((root==null)?this:root) {
+        synchronized (forkLock) {
             try {
                 if (this.forks.offer(session)) {
                     session.start();
@@ -133,7 +135,7 @@ public abstract class Component implements Runnable {
      */
     public void stop() {
         active.set(false);
-        synchronized ((root==null)?this:root) {
+        synchronized (forkLock) {
             if (forks != null) {
                 for (final Component child : forks) {
                     child.stop();
@@ -156,7 +158,7 @@ public abstract class Component implements Runnable {
      * "delete" the component
      */
     public void delete() {
-        synchronized ((root==null)?this:root) {
+        synchronized (forkLock) {
             if (forks != null) {
                 for (final Component child : forks) {
                     child.delete();

@@ -10,4 +10,6 @@ target/
 .idea/*
 test_out/
 .directory
+.classpath
+.project
 *~
