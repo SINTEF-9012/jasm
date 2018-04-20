@@ -61,7 +61,7 @@ public abstract class Component implements Runnable {
      */
     public synchronized void receive(final Event event) {
         if (active.get()) {
-            synchronized (forks) {
+            synchronized ((root==null)?this:root) {
                 queue.offer(event);
                 if (root == null && active.get()) {
                     forks.parallelStream().forEach((child) -> {
@@ -100,7 +100,7 @@ public abstract class Component implements Runnable {
     public void addSession(Component session) {
         session.root = this;
         session.init(new java.util.concurrent.LinkedBlockingQueue < Event > (256), null);
-        synchronized (forks) {
+        synchronized ((root==null)?this:root) {
             try {
                 if (this.forks.offer(session)) {
                     session.start();
@@ -133,7 +133,7 @@ public abstract class Component implements Runnable {
      */
     public void stop() {
         active.set(false);
-        synchronized (forks) {
+        synchronized ((root==null)?this:root) {
             if (forks != null) {
                 for (final Component child : forks) {
                     child.stop();
@@ -156,7 +156,7 @@ public abstract class Component implements Runnable {
      * "delete" the component
      */
     public void delete() {
-        synchronized (forks) {
+        synchronized ((root==null)?this:root) {
             if (forks != null) {
                 for (final Component child : forks) {
                     child.delete();
