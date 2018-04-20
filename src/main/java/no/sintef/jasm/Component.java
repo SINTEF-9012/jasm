@@ -61,13 +61,15 @@ public abstract class Component implements Runnable {
      */
     public synchronized void receive(final Event event) {
         if (active.get()) {
-            queue.offer(event);
-            if (root == null && active.get()) {
-                forks.parallelStream().forEach((child) -> {
-                	final Event clone = event.clone();
-                	clone.setPort(event.getPort());
-                	child.receive(clone);
-                });
+            synchronized (forks) {
+                queue.offer(event);
+                if (root == null && active.get()) {
+                    forks.parallelStream().forEach((child) -> {
+                        final Event clone = event.clone();
+                        clone.setPort(event.getPort());
+                        child.receive(clone);
+                    });
+                }
             }
         }
     }
@@ -98,18 +100,20 @@ public abstract class Component implements Runnable {
     public void addSession(Component session) {
         session.root = this;
         session.init(new java.util.concurrent.LinkedBlockingQueue < Event > (256), null);
-        try {
-            if (this.forks.offer(session)) {
-                session.start();
-            } else {
+        synchronized (forks) {
+            try {
+                if (this.forks.offer(session)) {
+                    session.start();
+                } else {
+                    session.delete();
+                    session = null;
+                }
+            } catch (Exception ex) {
+                System.err.println("Error while starting session: " + ex.getMessage());
+                ex.printStackTrace();
                 session.delete();
                 session = null;
             }
-        } catch (Exception ex) {
-            System.err.println("Error while starting session: " + ex.getMessage());
-            ex.printStackTrace();
-            session.delete ();
-            session = null;
         }
     }
 
@@ -129,9 +133,11 @@ public abstract class Component implements Runnable {
      */
     public void stop() {
         active.set(false);
-        if (forks != null) {
-            for (final Component child : forks) {
-                child.stop();
+        synchronized (forks) {
+            if (forks != null) {
+                for (final Component child : forks) {
+                    child.stop();
+                }
             }
         }
         try {
@@ -150,22 +156,25 @@ public abstract class Component implements Runnable {
      * "delete" the component
      */
     public void delete() {
-        if (forks != null) {
-            for (final Component child : forks) {
-                child.delete();
+        synchronized (forks) {
+            if (forks != null) {
+                for (final Component child : forks) {
+                    child.delete();
+                }
+                forks.clear();
+                forks = null;
             }
-            forks.clear();
-            forks = null;
-        }
-        behavior = null;
-        if (queue != null) {
-            queue.clear();
-            queue = null;
-        }
-        thread = null;
-        if (root != null) {
-            root.forks.remove(this);
-            root = null;
+
+            behavior = null;
+            if (queue != null) {
+                queue.clear();
+                queue = null;
+            }
+            thread = null;
+            if (root != null) {
+                root.forks.remove(this);
+                root = null;
+            }
         }
     }
 
