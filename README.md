@@ -9,6 +9,6 @@ JaSM provides the common concepts to define state machines: atomic states, compo
 <dependency>
   <groupId>no.sintef</groupId>
   <artifactId>jasm</artifactId>
-  <version>1.1.0</version>
+  <version>1.3.0</version>
 </dependency>
 ```

@@ -4,7 +4,7 @@
     <groupId>no.sintef</groupId>
     <artifactId>jasm</artifactId>
     <packaging>jar</packaging>
-    <version>1.3.0</version>
+    <version>1.4.0-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>A Java library to implement and execute UML-like state machines, with support for composite states, concurrent regions, etc.</description>
     <url>https://github.com/SINTEF-9012/jasm</url>
