@@ -4,9 +4,6 @@ import no.sintef.jasm.ext.Event;
 
 import java.util.Arrays;
 
-/**
- * @author bmori
- */
 public final class Region {
 
     final String name;

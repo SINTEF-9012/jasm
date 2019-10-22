@@ -5,8 +5,6 @@ import no.sintef.jasm.ext.HandlerAction;
 
 public class Transition extends Handler {
 
-
-
     public Transition() {
         super();
         this.action = (final Event event) -> {

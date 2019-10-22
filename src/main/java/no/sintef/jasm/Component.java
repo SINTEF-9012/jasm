@@ -198,7 +198,6 @@ public abstract class Component implements Runnable {
             while (active.get()) {
                 try {
                     final Event e = queue.take();//should wait if queue is empty, waiting for a message
-                    //System.out.println(name + " processing event " + e.getType().getName() + " received on port " + e.getPort().getName());
                     status.consumed = false;
                     status.next = null;
                     behavior.handle(e, status);

@@ -12,18 +12,7 @@ public class Handler {
     AtomicState target;
     HandlerAction action = (final Event event)->{};
     HandlerCheck check = (final Event event)->{
-        //return this.event.equals(event.getType()) && ((event.getPort() != null) ? event.getPort().equals(this.port) : this.port==null);
-        //System.out.println("Handler checking " + event);
-        //System.out.println(this.event + ".equals(" + event.getType() + ")?" + this.event.equals(event.getType()));
-        //System.out.println("event.port = " + event.getPort());
-        //System.out.println("this.port = " + this.port);
-        if (this.event.equals(event.getType()) && ((event.getPort() != null) ? event.getPort().equals(this.port) : this.port==null)) {
-            //System.out.println("OK");
-            return true;
-        } /*else {
-            System.out.println("NOT OK!!!");
-        }*/
-        return false;
+        return this.event.equals(event.getType()) && ((event.getPort() != null) ? event.getPort().equals(this.port) : this.port==null);
     };
 
     public Handler() {}
@@ -51,13 +40,9 @@ public class Handler {
 
     public Handler guard(final HandlerCheck c) {
         this.check = (final Event event) -> {
-            //System.out.println("Handler checking " + event);
             if (this.event.equals(event.getType()) && ((event.getPort() != null) ? event.getPort().equals(this.port) : this.port==null)) {
-                //System.out.println("OK");
                 return c.check(event);
-            } /*else {
-                System.out.println("NOT OK!!!");
-            }*/
+            }
             return false;
         };
         return this;

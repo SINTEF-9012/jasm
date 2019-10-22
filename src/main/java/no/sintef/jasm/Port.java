@@ -4,9 +4,6 @@ import no.sintef.jasm.ext.Event;
 
 import java.util.Arrays;
 
-/**
- * Created by bmori on 29.04.2014.
- */
 public class Port {
 
     final String name;
@@ -40,7 +37,6 @@ public class Port {
         for(final Port p : listeners) {
             Event clone = e.clone();
             clone.setPort(p);
-            //System.out.println(component.getName() + "::" + name + " --(" + e.getType().getName() + ")--> " + p.component.getName() + "::" + p.name);
             p.component.receive(clone);
         }
     }
